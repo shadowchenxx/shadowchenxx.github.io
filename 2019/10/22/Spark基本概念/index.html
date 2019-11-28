@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark 基本概念、模块和架构 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、基本概念 RDD(Resilient Distributed Datasets)：弹性分布式数据集，只读分区记录的集合，Spark 对所处理数据的基本抽象。RDD 是 Spark 分发数据和计算的基础抽象类。一个 RDD 是一个不可改变的分布式集合对象，因此在使用 scala 编写时，前面加修饰符 val 。Spark 中 的计算可以简单抽象为对 RDD 的创建、转换和返回操作结果的过程：">
+<meta name="keywords" content="Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark 基本概念、模块和架构">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;22&#x2F;Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、基本概念 RDD(Resilient Distributed Datasets)：弹性分布式数据集，只读分区记录的集合，Spark 对所处理数据的基本抽象。RDD 是 Spark 分发数据和计算的基础抽象类。一个 RDD 是一个不可改变的分布式集合对象，因此在使用 scala 编写时，前面加修饰符 val 。Spark 中 的计算可以简单抽象为对 RDD 的创建、转换和返回操作结果的过程：">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;spark_base_1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;spark_base_2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;spark_base_3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;spark_base_4.png">
+<meta property="og:updated_time" content="2019-10-22T09:58:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;spark_base_1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Spark基本概念" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/10/22/Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="article-date">
+  <time datetime="2019-10-22T09:58:06.000Z" itemprop="datePublished">2019-10-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spark 基本概念、模块和架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h3><ul>
+<li><p>RDD(Resilient Distributed Datasets)：弹性分布式数据集，只读分区记录的集合，Spark 对所处理数据的基本抽象。RDD 是 Spark 分发数据和计算的基础抽象类。一个 RDD 是一个不可改变的分布式集合对象，因此在使用 scala 编写时，前面加修饰符 val 。Spark 中 的计算可以简单抽象为对 RDD 的创建、转换和返回操作结果的过程：</p>
+<ul>
+<li><p>创建<br>通过加载外部物理存储（如HDFS）中的数据集，或 Application 中定义的对象集合（如List）来创建。RDD 在创建后不可被改变，只可以对其执行下面两种操作。</p>
+</li>
+<li><p>转换（Transformation）<br>对已有的 RDD 中的数据执行计算进行转换，而产生新的 RDD，在这个过程中有时会产生中间 RDD。Spark 对于 Transformation 采用惰性计算机制，遇到 Transformation 时并不会立即计算结果，而是要等遇到 Action 时一起执行。</p>
+</li>
+<li><p>行动（Action）<br>对已有的 RDD 中的数据执行计算产生结果，将结果返回 Driver 程序或写入到外部物理存储。在 Action 过程中同样有可能生成中间 RDD。</p>
+<a id="more"></a>
+</li>
+</ul>
+</li>
+<li><p>DAG(Directed Acyclic Graph)：有向无环图。在图论中，边没有方向的图称为无向图，如果边有方向称为有向图。在无向图的基础上，任何顶点都无法经过若干条边回到该点，则这个图就没有环路，称为有向无环图( DAG 图)。Spark 中使用 DAG 对 RDD 的关系进行建模，描述了 RDD 的依赖关系，这种关系也被称之为 lineage。</p>
+</li>
+<li><p>Partition：分区。一个 RDD 在物理上被切分为多个 Partition，即数据分区，这些 Partition 可以分布在不同的节点上。Partition 是 Spark 计算任务的基本处理单位，决定了并行计算的粒度，而 Partition 中的每一条 Record 为基本处理对象。例如对某个 RDD 进行 map 操作，在具体执行时是由多个并行的 Task 对各自分区的每一条记录进行 map 映射。</p>
+</li>
+<li><p>NarrowDependency：窄依赖。一个父 RDD 的 partition 最多被子 RDD 中的 partition 使用一次，一父对应一子。NarrowDependency 分为 OneToOneDependency 和 RangeDependency</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_1.png" alt="saprk_1"></p>
+</li>
+<li><p>ShuffleDependency(WideDependency)：宽依赖。父 RDD 中的一个 partition 会被子 RDD 中的 partition 使用多次，一父多子。</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_2.png" alt=""></p>
+</li>
+<li><p>Job：包含很多 task 的并行计算，可以认为是 Spark RDD 里面的 action，每个 action 的触发会生成一个 job。Spark 采用惰性机制，对 RDD 的创建和转换并不会立即执行，只有在遇到第一个 Action 时才会生成一个 Job，然后统一调度执行。一个 Job 包含 N 个 Transformation 和 1 个 Action。</p>
+</li>
+<li><p>Shuffle：有一部分 Transformation 或 Action 会让 RDD 产生宽依赖，这样过程就像是将父 RDD 中所有分区的 Record 进行了“洗牌”（Shuffle），数据被打散重组，如属于 Transformation 操作的 join，以及属于 Action 操作的 reduce 等，都会产生 Shuffle。</p>
+</li>
+<li><p>Stage：用户提交的计算任务是一个由 RDD 构成的 DAG，如果 RDD 在转换的时候需要做 Shuffle，那么这个 Shuffle 的过程就将这个 DAG 分为了不同的阶段（即Stage）。由于 Shuffle 的存在，不同的Stage 是不能并行计算的，因为后面 Stage 的计算需要前面 Stage 的 Shuffle 的结果。在对 Job 中的所有操作划分 Stage 时，一般会按照倒序进行，即从 Action 开始，遇到窄依赖操作，则划分到同一个执行阶段，遇到宽依赖操作，则划分一个新的执行阶段，且新的阶段为之前阶段的 parent，然后依次类推递归执行。child Stage 需要等待所有的 parent Stage执行完之后才可以执行，这时Stage 之间根据依赖关系构成了一个大粒度的 DAG 。在一个 Stage 内，所有的操作以串行的 Pipeline 的方式，由一组 Task 完成计算。</p>
+</li>
+<li><p>Task：具体执行任务。一个 Job 在每个 Stage 内都会按照 RDD 的 Partition 数量，创建多个 task。每个 Stage 内多个并发的 Task 执行逻辑完全相同，只是作用于不同的Partition。一个 Stage 的总 Task 的个数由 Stage 中最后的一个 RDD 的 Partition 的个数决定。 在 Spark 中有两类 task:<br>ShuffleMapTask：输出是 shuffle 所需数据， stage 的划分也以此为依据， shuffle 之前的所有变换是一个 stage，shuffle 之后的操作是另一个 stage 。</p>
+</li>
+<li><p>ResultTask：输出是 result，比如 rdd.parallize(1 to 10).foreach(println) 这个操作没有 shuffle，直接就输出了，那么它的 task 是 resultTask，stage 也只有一个；如果是 rdd.map(x =&gt; (x, 1)).reduceByKey(_ + _).foreach(println)， 这个 job 因为有 reduce，所以有一个 shuffle 过程，那么 reduceByKey 之前的是一个 stage，执行 ShuffleMapTask，输出 shuffle 所需的数据，reduceByKey 到最后是一个 stage，直接就输出结果了。如果 job 中有多次 shuffle，那么每个 shuffle 之前都是一个stage。</p>
+</li>
+<li><p><a href="https://www.cnblogs.com/wzj4858/p/8204411.html" target="_blank" rel="noopener"><a href="https://www.cnblogs.com/wzj4858/p/8204411.html" target="_blank" rel="noopener">spark中job stage task关系</a></a></p>
+</li>
+</ul>
+<h3 id="二、基本模块"><a href="#二、基本模块" class="headerlink" title="二、基本模块"></a>二、基本模块</h3><p>整个 Spark 主要由以下模块组成：</p>
+<ul>
+<li><p>Spark Core：Spark的核心功能实现，包括：<br>基础设施：Spark 中有很多基础设施，被 Spark 中的各种组件广泛使用，这些基础设施包括 SparkConf、Spark 内置 RPC 框架、事件总线 ListenerBus、度量系统。<br>SparkConf 用于管理Spark应用程序的各种配置信息。<br>Spark 内置 RPC 框架 使用 Netty 实现，有同步和异步的多种实现，Spark 各个组件间的通信都依赖于此 RPC 框架。<br>事件总线是 SparkContext 内部各个组件间使用事件——监听器模式异步调用的实现。<br>度量系统由Spark中的多种度量源（Source）和多种度量输出（Sink）构成，完成对整个Spark集群中各个组件运行期状态的监控。</p>
+</li>
+<li><p>SparkContext：SparkContext 是 Spark 的入口，Spark 程序的提交与执行离不开 SparkContext。它隐藏了网络通信、分布式部署、消息通信、存储体系、计算引擎、度量系统、文件服务、Web UI 等内容，开发者只需要使用 SparkContext 提供的 API 完成功能开发。</p>
+</li>
+<li><p>SparkEnv：Spark 执行环境。SparkEnv 内部封装了 RPC 环境（RpcEnv）、序列化管理器、广播管理器（BroadcastManager）、map任务输出跟踪器（MapOutputTracker）、存储体系、度量系统（MetricsSystem）、输出提交协调器（OutputCommitCoordinator）等Task运行所需的各种组件。<br>存储体系：它优先考虑使用各节点的内存作为存储，当内存不足时才会考虑使用磁盘，这极大地减少了磁盘 I/O，提升了任务执行的效率，使得 Spark 适用于实时计算、迭代计算、流式计算等场景。Spark 的内存存储空间和执行存储空间之间的边界是可以控制的。<br>调度系统：调度系统主要由 DAGScheduler 和 TaskScheduler 组成。DAGScheduler 负责创建 Job、将 DAG 中的 RDD 划分到不同的 Stage、给 Stage 创建对应的 Task、批量提交 Task 等功能。TaskScheduler 负责按照 FIFO 或者 FAIR 等调度算法对批量 Task 进行调度。<br>计算引擎等：计算引擎由内存管理器、任务内存管理器、Task、Shuffle 管理器等组成。</p>
+</li>
+<li><p>Spark SQL：提供SQL处理能力，便于熟悉关系型数据库操作的工程师进行交互查询。此外，还为熟悉 Hive 开发的用户提供了对 Hive SQL 的支持。</p>
+</li>
+<li><p>Spark Streaming：提供流式计算处理能力，目前支持 Apache Kafka、Apache Flume、Amazon Kinesis 和简单的 TCP 套接字等多种数据源。此外，Spark Streaming 还提供窗口操作用于对一定周期内的流数据进行处理。</p>
+</li>
+<li><p>GraphX：提供图计算处理能力，支持分布式，Pregel 提供的 API 可以解决图计算中的常见问题。<br>MLlib：Spark 提供的机器学习库。MLlib 提供了机器学习相关的统计、分类、回归等领域的多种算法实现。其一致的 API 接口大大降低了用户的学习成本。<br>Spark SQL、Spark Streaming、GraphX、MLlib的能力都是建立在核心引擎之上：</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_3.png" alt=""></p>
+</li>
+</ul>
+<h3 id="三、基本架构"><a href="#三、基本架构" class="headerlink" title="三、基本架构"></a>三、基本架构</h3><p>Spark 集群由集群管理器 Cluster Manager、工作节点 Worker、执行器 Executor、驱动器 Driver、应用程序 Application 等部分组成。</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_4.png" alt=""></p>
+<ul>
+<li><p>3.1、Cluter Manager<br>Spark 的集群管理器，主要负责对整个集群资源的分配和管理。根据部署模式的不同，可以分为如下：</p>
+<p>Hadoop YARN: 主要是指 YARN 中的 ResourceManager。YARN 是 Hadoop2.0 中引入的集群管理器，可以让多种数据处理框架运行在一个共享的资源池上，让 Spark 运行在配置了 YARN 的集群上是一个非常好的选择，可以利用 YARN 来管理资源。<br>Apache Mesos：主要是指 Mesos Master。Mesos 起源于Berkeley AMP实验室，是一个通用的集群管理器。能够将CPU、内存、存储以及其它计算资源由设备（物理或虚拟）中抽象出来，形成一个池的逻辑概念，从而实现高容错与弹性分布式系统的轻松构建与高效运行。<br>Standalone：主要是指 Standalone Master。Standalone Master 是 spark 原生的资源管理，由Master负责资源的分配。</p>
+</li>
+<li><p>3.2、Worker<br>Spark 的工作节点，用于执行提交的作业。在 YARN 部署模式下 Worker 由 NodeManager 代替。Worker 有如下作用：</p>
+<p>通过注册机制向 Cluster Master 汇报自身的 cpu 和 memory 等资源<br>在 Master 的指示下创建启动 Executor，Executor 是执行真正计算的苦力<br>将资源和任务进一步分配给 Executor<br>同步资源信息、Executor 状态信息给 Cluster Master</p>
+</li>
+<li><p>3.3、Executor<br>真正执行计算任务的组件。</p>
+<p>Executor 是某个 Application 运行在 Worker 节点上的一个进程，该进程负责运行某些 Task， 并且负责将数据存到内存或磁盘上，每个 Application 都有各自独立的一批 Executor， 在 Spark on Yarn 模式下，其进程名称为 CoarseGrainedExecutor Backend。一个 CoarseGrainedExecutor Backend 有且仅有一个 Executor 对象， 负责将 Task 包装成 taskRunner，并从线程池中抽取一个空闲线程运行 Task， 每个 CoarseGrainedExecutorBackend 能并行运行 Task 的数量取决于分配给它的 CPU 的个数。</p>
+</li>
+<li><p>3.4、Driver<br>Application 的驱动程序。可以理解为使程序运行中的 main 函数，它会创建 SparkContext。Application 通过 Driver 与 Cluster Master 和 Executor 进行通信。Driver 可以运行在 Application 中，也可以由 Application 提交给 Cluster Master，由 Cluster Master 安排 Worker 运行。</p>
+<p>Driver 的作用：</p>
+<p>运行应用程序的 main 函数<br>创建 Spark 的上下文<br>划分 RDD 并生成有向无环图（DAGScheduler）<br>与 Spark 中的其他组进行协调，协调资源等等（SchedulerBackend）<br>生成并发送 task 到 executor（taskScheduler）</p>
+</li>
+<li><p>3.5、Application<br>用户使用 Spark API 编写的的应用程序，其中包括一个 Driver 功能的代码和分布在集群中多个节点上运行的 Executor 代码。</p>
+<p>Application 通过 Spark API 创建 RDD，对 RDD 进行转换，创建 DAG，并通过 Driver 将 Application 注册到 Cluster Master。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/10/22/Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" data-id="ck3ixumoj000kclwe50z4gtjf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/30/UDF&GenericUDF/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hive- UDF&amp;GenericUDF
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/17/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E5%8F%AF%E8%90%BD%E5%9C%B0%E6%89%A7%E8%A1%8C%E8%A1%A8%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数仓表命名规范</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

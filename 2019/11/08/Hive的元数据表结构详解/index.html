@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hive的元数据表结构详解 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.VERSION   VER_ID SCHEMA_VERSION VERSION_COMMENT    ID主键 Hive版本 版本说明   1 0.13.0 Set by MetaStore   如果该表出现问题，根本进入不了Hive-Cli。 比如该表不存在，当启动Hive-Cli时候，就会报错”Table ‘hive.version’ doesn’t exist”.">
+<meta name="keywords" content="Hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive的元数据表结构详解">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;08&#x2F;Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.VERSION   VER_ID SCHEMA_VERSION VERSION_COMMENT    ID主键 Hive版本 版本说明   1 0.13.0 Set by MetaStore   如果该表出现问题，根本进入不了Hive-Cli。 比如该表不存在，当启动Hive-Cli时候，就会报错”Table ‘hive.version’ doesn’t exist”.">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-08T09:33:06.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Hive的元数据表结构详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2019-11-08T09:22:18.000Z" itemprop="datePublished">2019-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hive的元数据表结构详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-VERSION"><a href="#1-VERSION" class="headerlink" title="1.VERSION"></a>1.VERSION</h4><table>
+<thead>
+<tr>
+<th><strong>VER_ID</strong></th>
+<th><strong>SCHEMA_VERSION</strong></th>
+<th><strong>VERSION_COMMENT</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ID主键</td>
+<td>Hive版本</td>
+<td>版本说明</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0.13.0</td>
+<td>Set by MetaStore</td>
+</tr>
+</tbody></table>
+<p>如果该表出现问题，根本进入不了Hive-Cli。</p>
+<p>比如该表不存在，当启动Hive-Cli时候，就会报错”Table ‘hive.version’ doesn’t exist”.</p>
+<a id="more"></a>
+
+<h4 id="2-DBS、DATABASE-PARAMS"><a href="#2-DBS、DATABASE-PARAMS" class="headerlink" title="2.DBS、DATABASE_PARAMS"></a>2.DBS、DATABASE_PARAMS</h4><ul>
+<li>DBS</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DB_ID</strong></td>
+<td>数据库ID</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>DESC</strong></td>
+<td>数据库描述</td>
+<td>测试库</td>
+</tr>
+<tr>
+<td><strong>DB_LOCATION_URI</strong></td>
+<td>数据库HDFS路径</td>
+<td>hdfs://namenode/user/hive/warehouse/lxw1234.db</td>
+</tr>
+<tr>
+<td><strong>NAME</strong></td>
+<td>数据库名</td>
+<td>lxw1234</td>
+</tr>
+<tr>
+<td><strong>OWNER_NAME</strong></td>
+<td>数据库所有者用户名</td>
+<td>lxw1234</td>
+</tr>
+<tr>
+<td><strong>OWNER_TYPE</strong></td>
+<td>所有者角色</td>
+<td>USER</td>
+</tr>
+</tbody></table>
+<ul>
+<li>DATABASE_PARAMS</li>
+</ul>
+<p>该表存储数据库的相关参数，在CREATE DATABASE时候用</p>
+<p>WITH DBPROPERTIES (property_name=property_value, …)指定的参数。</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DB_ID</strong></td>
+<td>数据库ID</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>PARAM_KEY</strong></td>
+<td>参数名</td>
+<td>createdby</td>
+</tr>
+<tr>
+<td><strong>PARAM_VALUE</strong></td>
+<td>参数值</td>
+<td>lxw1234</td>
+</tr>
+</tbody></table>
+<p>DBS和DATABASE_PARAMS这两张表通过DB_ID字段关联.</p>
+<h4 id="3-TBLS、TABLE-PARAMS、TBL-PRIV"><a href="#3-TBLS、TABLE-PARAMS、TBL-PRIV" class="headerlink" title="3.TBLS、TABLE_PARAMS、TBL_PRIV"></a>3.TBLS、TABLE_PARAMS、TBL_PRIV</h4><ul>
+<li>TBLS（该表中存储Hive表、视图、索引表的基本信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TBL_ID</strong></td>
+<td>表ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>CREATE_TIME</strong></td>
+<td>创建时间</td>
+<td>1436317071</td>
+</tr>
+<tr>
+<td><strong>DB_ID</strong></td>
+<td>数据库ID</td>
+<td>2，对应DBS中的DB_ID</td>
+</tr>
+<tr>
+<td><strong>LAST_ACCESS_TIME</strong></td>
+<td>上次访问时间</td>
+<td>1436317071</td>
+</tr>
+<tr>
+<td><strong>OWNER</strong></td>
+<td>所有者</td>
+<td>liuxiaowen</td>
+</tr>
+<tr>
+<td><strong>RETENTION</strong></td>
+<td>保留字段</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>SD_ID</strong></td>
+<td>序列化配置信息</td>
+<td>86，对应SDS表中的SD_ID</td>
+</tr>
+<tr>
+<td><strong>TBL_NAME</strong></td>
+<td>表名</td>
+<td>lxw1234</td>
+</tr>
+<tr>
+<td><strong>TBL_TYPE</strong></td>
+<td>表类型</td>
+<td>MANAGED_TABLE、EXTERNAL_TABLE、INDEX_TABLE、VIRTUAL_VIEW</td>
+</tr>
+<tr>
+<td><strong>VIEW_EXPANDED_TEXT</strong></td>
+<td>视图的详细HQL语句</td>
+<td>select <code>lxw1234</code>.<code>pt</code>, <code>lxw1234</code>.<code>pcid</code> from <code>liuxiaowen</code>.<code>lxw1234</code></td>
+</tr>
+<tr>
+<td><strong>VIEW_ORIGINAL_TEXT</strong></td>
+<td>视图的原始HQL语句</td>
+<td>select * from lxw1234</td>
+</tr>
+</tbody></table>
+<ul>
+<li>TABLE_PARAMS（存储表/视图的属性信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TBL_ID</strong></td>
+<td>表ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>PARAM_KEY</strong></td>
+<td>属性名</td>
+<td>totalSize、numRows、EXTERNAL</td>
+</tr>
+<tr>
+<td><strong>PARAM_VALUE</strong></td>
+<td>属性值</td>
+<td>970107336、21231028、TRUE</td>
+</tr>
+</tbody></table>
+<ul>
+<li>TBL_PRIVS（存储表/视图的授权信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TBL_GRANT_ID</strong></td>
+<td>授权ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>CREATE_TIME</strong></td>
+<td>授权时间</td>
+<td>1436320455</td>
+</tr>
+<tr>
+<td><strong>GRANT_OPTION</strong></td>
+<td></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>GRANTOR</strong></td>
+<td>授权执行用户</td>
+<td>liuxiaowen</td>
+</tr>
+<tr>
+<td><strong>GRANTOR_TYPE</strong></td>
+<td>授权者类型</td>
+<td>USER</td>
+</tr>
+<tr>
+<td><strong>PRINCIPAL_NAME</strong></td>
+<td>被授权用户</td>
+<td>username</td>
+</tr>
+<tr>
+<td><strong>PRINCIPAL_TYPE</strong></td>
+<td>被授权用户类型</td>
+<td>USER</td>
+</tr>
+<tr>
+<td><strong>TBL_PRIV</strong></td>
+<td>权限</td>
+<td>Select、Alter</td>
+</tr>
+<tr>
+<td><strong>TBL_ID</strong></td>
+<td>表ID</td>
+<td>22，对应TBLS表中的TBL_ID</td>
+</tr>
+</tbody></table>
+<h4 id="4-Hive文件存储信息相关的元数据表"><a href="#4-Hive文件存储信息相关的元数据表" class="headerlink" title="4.Hive文件存储信息相关的元数据表"></a>4.Hive文件存储信息相关的元数据表</h4><p>主要涉及SDS、SD_PARAMS、SERDES、SERDE_PARAMS</p>
+<p>由于HDFS支持的文件格式很多，而建Hive表时候也可以指定各种文件格式，Hive在将HQL解析成MapReduce时候，需要知道去哪里，使用哪种格式去读写HDFS文件，而这些信息就保存在这几张表中。</p>
+<ul>
+<li>SDS</li>
+</ul>
+<p>该表保存文件存储的基本信息，如INPUT_FORMAT、OUTPUT_FORMAT、是否压缩等。</p>
+<p>TBLS表中的SD_ID与该表关联，可以获取Hive表的存储信息。</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SD_ID</strong></td>
+<td>存储信息ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>CD_ID</strong></td>
+<td>字段信息ID</td>
+<td>21，对应CDS表</td>
+</tr>
+<tr>
+<td><strong>INPUT_FORMAT</strong></td>
+<td>文件输入格式</td>
+<td>org.apache.hadoop.mapred.TextInputFormat</td>
+</tr>
+<tr>
+<td><strong>IS_COMPRESSED</strong></td>
+<td>是否压缩</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>IS_STOREDASSUBDIRECTORIES</strong></td>
+<td>是否以子目录存储</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>LOCATION</strong></td>
+<td>HDFS路径</td>
+<td>hdfs://namenode/hivedata/warehouse/ut.db/t_lxw</td>
+</tr>
+<tr>
+<td><strong>NUM_BUCKETS</strong></td>
+<td>分桶数量</td>
+<td>5</td>
+</tr>
+<tr>
+<td><strong>OUTPUT_FORMAT</strong></td>
+<td>文件输出格式</td>
+<td>org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat</td>
+</tr>
+<tr>
+<td><strong>SERDE_ID</strong></td>
+<td>序列化类ID</td>
+<td>3，对应SERDES表</td>
+</tr>
+</tbody></table>
+<ul>
+<li>SD_PARAMS（存储Hive存储的属性信息，在创建表时候使用）</li>
+</ul>
+<p>STORED BY ‘storage.handler.class.name’ [WITH SERDEPROPERTIES (…)指定。</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SD_ID</strong></td>
+<td>存储配置ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>PARAM_KEY</strong></td>
+<td>存储属性名</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>PARAM_VALUE</strong></td>
+<td>存储属性值</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>SERDES（存储序列化使用的类信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SERDE_ID</strong></td>
+<td>序列化类配置ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>NAME</strong></td>
+<td>序列化类别名</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>SLIB</strong></td>
+<td>序列化类</td>
+<td>org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe</td>
+</tr>
+</tbody></table>
+<ul>
+<li>SERDE_PARAMS（存储序列化的一些属性、格式信息,比如：行、列分隔符）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SERDE_ID</strong></td>
+<td>序列化类配置ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>PARAM_KEY</strong></td>
+<td>属性名</td>
+<td>field.delim</td>
+</tr>
+<tr>
+<td><strong>PARAM_VALUE</strong></td>
+<td>属性值</td>
+<td>,</td>
+</tr>
+</tbody></table>
+<h4 id="5-Hive表字段相关的元数据表"><a href="#5-Hive表字段相关的元数据表" class="headerlink" title="5.Hive表字段相关的元数据表"></a>5.Hive表字段相关的元数据表</h4><ul>
+<li>COLUMNS_V2（存储表对应的字段信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CD_ID</strong></td>
+<td>字段信息ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>COMMENT</strong></td>
+<td>字段注释</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>COLUMN_NAME</strong></td>
+<td>字段名</td>
+<td>pt</td>
+</tr>
+<tr>
+<td><strong>TYPE_NAME</strong></td>
+<td>字段类型</td>
+<td>string</td>
+</tr>
+<tr>
+<td><strong>INTEGER_IDX</strong></td>
+<td>字段顺序</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<h4 id="6-Hive表分区相关的元数据表"><a href="#6-Hive表分区相关的元数据表" class="headerlink" title="6.Hive表分区相关的元数据表"></a>6.Hive表分区相关的元数据表</h4><p>主要涉及PARTITIONS、PARTITION_KEYS、PARTITION_KEY_VALS、PARTITION_PARAMS</p>
+<ul>
+<li>PARTITIONS（存储表分区的基本信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>PART_ID</strong></td>
+<td>分区ID</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>CREATE_TIME</strong></td>
+<td>分区创建时间</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>LAST_ACCESS_TIME</strong></td>
+<td>最后一次访问时间</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>PART_NAME</strong></td>
+<td>分区名</td>
+<td>pt=2015-06-12</td>
+</tr>
+<tr>
+<td><strong>SD_ID</strong></td>
+<td>分区存储ID</td>
+<td>21</td>
+</tr>
+<tr>
+<td><strong>TBL_ID</strong></td>
+<td>表ID</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_KEYS（存储分区的字段信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TBL_ID</strong></td>
+<td>表ID</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>PKEY_COMMENT</strong></td>
+<td>分区字段说明</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>PKEY_NAME</strong></td>
+<td>分区字段名</td>
+<td>pt</td>
+</tr>
+<tr>
+<td><strong>PKEY_TYPE</strong></td>
+<td>分区字段类型</td>
+<td>string</td>
+</tr>
+<tr>
+<td><strong>INTEGER_IDX</strong></td>
+<td>分区字段顺序</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_KEY_VALS（存储分区字段值）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>PART_ID</strong></td>
+<td>分区ID</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>PART_KEY_VAL</strong></td>
+<td>分区字段值</td>
+<td>2015-06-12</td>
+</tr>
+<tr>
+<td><strong>INTEGER_IDX</strong></td>
+<td>分区字段值顺序</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_PARAMS（存储分区的属性信息）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>说明</strong></th>
+<th><strong>示例数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>PART_ID</strong></td>
+<td>分区ID</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>PARAM_KEY</strong></td>
+<td>分区属性名</td>
+<td>numFiles、numRows</td>
+</tr>
+<tr>
+<td><strong>PARAM_VALUE</strong></td>
+<td>分区属性值</td>
+<td>15、502195</td>
+</tr>
+</tbody></table>
+<h4 id="7-其他不常用的元数据表"><a href="#7-其他不常用的元数据表" class="headerlink" title="7.其他不常用的元数据表"></a>7.其他不常用的元数据表</h4><ul>
+<li><p>DB_PRIVS（数据库权限信息表。通过GRANT语句对数据库授权后，将会在这里存储）</p>
+</li>
+<li><p>IDXS（索引表，存储Hive索引相关的元数据）</p>
+</li>
+<li><p>INDEX_PARAMS（索引相关的属性信息）</p>
+</li>
+<li><p>TAB_COL_STATS（表字段的统计信息，使用ANALYZE语句对表字段分析后记录在这里）</p>
+</li>
+<li><p>TBL_COL_PRIVS（表字段的授权信息）</p>
+</li>
+<li><p>PART_PRIVS（分区的授权信息）</p>
+</li>
+<li><p>PART_COL_STATS（分区字段的统计信息）</p>
+</li>
+<li><p>PART_COL_PRIVS（分区字段的权限信息）</p>
+</li>
+<li><p>FUNCS（用户注册的函数信息）</p>
+</li>
+<li><p>FUNC_RU（用户注册函数的资源信息）</p>
+</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> lxw1234 (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> cookieid <span class="keyword">STRING</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> <span class="keyword">url</span> <span class="keyword">STRING</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> ua <span class="keyword">STRING</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"> ip <span class="keyword">STRING</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"> createtime <span class="keyword">STRING</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">COMMENT</span> <span class="string">'This is the page view table'</span> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">partitioned <span class="keyword">BY</span> (<span class="keyword">day</span> <span class="keyword">STRING</span>,site <span class="keyword">STRING</span>) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">ROW</span> <span class="keyword">FORMAT</span> <span class="keyword">DELIMITED</span> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">stored</span> <span class="keyword">AS</span> ORC;</span></pre></td></tr></table></figure>
+
+<p><strong>建表执行之后，元数据中以下表的数据会有所变化</strong>：</p>
+<ul>
+<li>TBLS</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">--生成了表lxw1234的基本信息</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> TBLS <span class="keyword">WHERE</span> TBL_NAME = ‘lxw1234’;</span></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TBL_ID</strong></td>
+<td>41509</td>
+</tr>
+<tr>
+<td><strong>CREATE_TIME</strong></td>
+<td>1436324659</td>
+</tr>
+<tr>
+<td><strong>DB_ID</strong></td>
+<td>11</td>
+</tr>
+<tr>
+<td><strong>LAST_ACCESS_TIME</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>OWNER</strong></td>
+<td>liuxiaowen</td>
+</tr>
+<tr>
+<td><strong>RETENTION</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>SD_ID</strong></td>
+<td>91740</td>
+</tr>
+<tr>
+<td><strong>TBL_NAME</strong></td>
+<td>lxw1234</td>
+</tr>
+<tr>
+<td><strong>TBL_TYPE</strong></td>
+<td>MANAGED_TABLE</td>
+</tr>
+<tr>
+<td><strong>VIEW_EXPANDED_TEXT</strong></td>
+<td>NULL</td>
+</tr>
+<tr>
+<td><strong>VIEW_ORIGINAL_TEXT</strong></td>
+<td>NULL</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>TABLE_PARAMS</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  *  <span class="keyword">from</span>  TABLE_PARAMS  <span class="keyword">WHERE</span>  TBL_ID=<span class="number">41509</span></span></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>TBL_ID</strong></th>
+<th><strong>PARAM_KEY</strong></th>
+<th><strong>PARAM_VALUE</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>41509</td>
+<td>comment</td>
+<td>This is the page view table</td>
+</tr>
+<tr>
+<td>41509</td>
+<td>transient_lastDdlTime</td>
+<td>1436324659</td>
+</tr>
+</tbody></table>
+<ul>
+<li>SDS</li>
+</ul>
+<p><strong>SELECT</strong> * <strong>FROM</strong> SDS <strong>WHERE</strong> SD_ID = 91740</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SD_ID</strong></td>
+<td>91740</td>
+</tr>
+<tr>
+<td><strong>CD_ID</strong></td>
+<td>41564</td>
+</tr>
+<tr>
+<td><strong>INPUT_FORMAT</strong></td>
+<td>org.apache.hadoop.hive.ql.io.orc.OrcInputFormat</td>
+</tr>
+<tr>
+<td><strong>IS_COMPRESSED</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>IS_STOREDASSUBDIRECTORIES</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>LOCATION</strong></td>
+<td>hdfs://namenode/hivedata/warehouse/liuxiaowen.db/lxw1234</td>
+</tr>
+<tr>
+<td><strong>NUM_BUCKETS</strong></td>
+<td>-1</td>
+</tr>
+<tr>
+<td><strong>OUTPUT_FORMAT</strong></td>
+<td>org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat</td>
+</tr>
+<tr>
+<td><strong>SERDE_ID</strong></td>
+<td><strong>91740</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li>SERDES</li>
+</ul>
+<p><strong>select</strong> * <strong>from</strong> SERDES <strong>WHERE</strong> SERDE_ID = 91740</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SERDE_ID</strong></td>
+<td>91740</td>
+</tr>
+<tr>
+<td><strong>NAME</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>SLIB</strong></td>
+<td>org.apache.hadoop.hive.ql.io.orc.OrcSerde</td>
+</tr>
+</tbody></table>
+<ul>
+<li>SERDE_PARAMS</li>
+</ul>
+<p>select * from  SERDE_PARAMS  WHERE  SERDE_ID=91740</p>
+<table>
+<thead>
+<tr>
+<th><strong>SERDE_ID</strong></th>
+<th><strong>PARAM_KEY</strong></th>
+<th><strong>PARAM_VALUE</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>91740</td>
+<td>field.delim</td>
+<td>,</td>
+</tr>
+<tr>
+<td>91740</td>
+<td>serialization.format</td>
+<td>,</td>
+</tr>
+</tbody></table>
+<ul>
+<li>COLUMNS_V2</li>
+</ul>
+<p>select * from COLUMNS_V2 WHERE CD_ID=41564 ORDER BY INTEGER_IDX</p>
+<table>
+<thead>
+<tr>
+<th><strong>CD_ID</strong></th>
+<th><strong>COMMENT</strong></th>
+<th><strong>COLUMN_NAME</strong></th>
+<th><strong>TYPE_NAME</strong></th>
+<th><strong>INTEGER_IDX</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>41564</td>
+<td></td>
+<td>cookieid</td>
+<td>string</td>
+<td>0</td>
+</tr>
+<tr>
+<td>41564</td>
+<td></td>
+<td>url</td>
+<td>string</td>
+<td>1</td>
+</tr>
+<tr>
+<td>41564</td>
+<td></td>
+<td>ua</td>
+<td>string</td>
+<td>2</td>
+</tr>
+<tr>
+<td>41564</td>
+<td></td>
+<td>ip</td>
+<td>string</td>
+<td>3</td>
+</tr>
+<tr>
+<td>41564</td>
+<td></td>
+<td>createtime</td>
+<td>string</td>
+<td>4</td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_KEYS</li>
+</ul>
+<p>select * from  PARTITION_KEYS  WHERE  TBL_ID=41509</p>
+<table>
+<thead>
+<tr>
+<th><strong>TBL_ID</strong></th>
+<th><strong>PKEY_COMMENT</strong></th>
+<th><strong>PKEY_NAME</strong></th>
+<th><strong>PKEY_TYPE</strong></th>
+<th><strong>INTEGER_IDX</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>41509</td>
+<td></td>
+<td>day</td>
+<td>string</td>
+<td>0</td>
+</tr>
+<tr>
+<td>41509</td>
+<td></td>
+<td>site</td>
+<td>string</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<ul>
+<li>插入数据：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> lxw1234 <span class="keyword">PARTITION</span> (<span class="keyword">day</span> = <span class="string">'2015-07-08'</span>, site = <span class="string">'lxw1234.com'</span>) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="string">'cookie1'</span> <span class="keyword">AS</span> cookieid,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="string">'http://lxw1234.com'</span> <span class="keyword">AS</span> <span class="keyword">url</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">'firefox'</span> <span class="keyword">AS</span> ua,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="string">'127.0.0.1'</span> <span class="keyword">AS</span> ip,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">'2015-07-08 11:00:01'</span> <span class="keyword">AS</span> createtime </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> dual </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">limit</span> <span class="number">1</span>;</span></pre></td></tr></table></figure>
+
+<p><strong>插入数据执行完之后，以下表的元数据发生变化：</strong></p>
+<ul>
+<li>PARTITIONS</li>
+</ul>
+<p>select * from  <code>PARTITIONS</code>  WHERE  TBL_ID=41509</p>
+<table>
+<thead>
+<tr>
+<th><strong>PART_ID</strong></th>
+<th><strong>CREATE_TIME</strong></th>
+<th><strong>LAST_ACCESS_TIME</strong></th>
+<th><strong>PART_NAME</strong></th>
+<th><strong>SD_ID</strong></th>
+<th><strong>TBL_ID</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>54472</td>
+<td>1436325812</td>
+<td>0</td>
+<td>day=2015-07-08/site=lxw1234.com</td>
+<td>91746</td>
+<td>41509</td>
+</tr>
+</tbody></table>
+<ul>
+<li>SDS</li>
+</ul>
+<p>select *  from  SDS  WHERE  SD_ID=91746</p>
+<p>注意：这里的存储和表的存储是不同的，因为每个分区也会有一个SD</p>
+<table>
+<thead>
+<tr>
+<th><strong>元数据表字段</strong></th>
+<th><strong>数据</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SD_ID</strong></td>
+<td><strong>91746</strong></td>
+</tr>
+<tr>
+<td><strong>CD_ID</strong></td>
+<td>41564</td>
+</tr>
+<tr>
+<td><strong>INPUT_FORMAT</strong></td>
+<td>org.apache.hadoop.hive.ql.io.orc.OrcInputFormat</td>
+</tr>
+<tr>
+<td><strong>IS_COMPRESSED</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>IS_STOREDASSUBDIRECTORIES</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>LOCATION</strong></td>
+<td>hdfs://namenode/hivedata/warehouse/liuxiaowen.db/lxw1234/day=2015-07-08/site=lxw1234.com</td>
+</tr>
+<tr>
+<td><strong>NUM_BUCKETS</strong></td>
+<td>-1</td>
+</tr>
+<tr>
+<td><strong>OUTPUT_FORMAT</strong></td>
+<td>org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat</td>
+</tr>
+<tr>
+<td><strong>SERDE_ID</strong></td>
+<td><strong>91746</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_KEY_VALS</li>
+</ul>
+<p>select  *  from  PARTITION_KEY_VALS  where  PART_ID=54472</p>
+<table>
+<thead>
+<tr>
+<th><strong>PART_ID</strong></th>
+<th><strong>PART_KEY_VAL</strong></th>
+<th><strong>INTEGER_IDX</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>54472</td>
+<td>2015-07-08</td>
+<td>0</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>lxw1234.com</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<ul>
+<li>PARTITION_PARAMS</li>
+</ul>
+<p>select * from PARTITION_PARAMS where PART_ID = 54472</p>
+<table>
+<thead>
+<tr>
+<th><strong>PART_ID</strong></th>
+<th><strong>PARAM_KEY</strong></th>
+<th><strong>PARAM_VALUE</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>54472</td>
+<td>COLUMN_STATS_ACCURATE</td>
+<td>true</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>numFiles</td>
+<td>1</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>numRows</td>
+<td>1</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>rawDataSize</td>
+<td>408</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>totalSize</td>
+<td>703</td>
+</tr>
+<tr>
+<td>54472</td>
+<td>transient_lastDdlTime</td>
+<td>1436325813</td>
+</tr>
+</tbody></table>
+<p>文章转自：<a href="http://lxw1234.com/archives/2015/07/378.htm" target="_blank" rel="noopener">http://lxw1234.com/archives/2015/07/378.htm</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/" data-id="ck3ixumob0007clweft4390uv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          双11_让我遇见你
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/31/%E9%87%8D%E8%B0%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E8%AE%BE%E8%AE%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重谈维度表设计</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

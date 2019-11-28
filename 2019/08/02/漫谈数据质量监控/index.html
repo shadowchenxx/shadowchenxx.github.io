@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>数据质量[转载] | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="漫谈数据质量监控 往往那些不起眼的功能，最能毁掉你的工作成果。  本篇分享一些和数据质量监控相关的内容。数据质量监控是一个在快速发展的业务中最容易被牺牲和忽略的功能，但是它确实至关重要的。">
+<meta name="keywords" content="数据仓库,数据质量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据质量[转载]">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;08&#x2F;02&#x2F;%E6%BC%AB%E8%B0%88%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F%E7%9B%91%E6%8E%A7&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="漫谈数据质量监控 往往那些不起眼的功能，最能毁掉你的工作成果。  本篇分享一些和数据质量监控相关的内容。数据质量监控是一个在快速发展的业务中最容易被牺牲和忽略的功能，但是它确实至关重要的。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-02T11:55:30.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-漫谈数据质量监控" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/02/%E6%BC%AB%E8%B0%88%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F%E7%9B%91%E6%8E%A7/" class="article-date">
+  <time datetime="2019-08-02T11:54:22.000Z" itemprop="datePublished">2019-08-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      数据质量[转载]
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="漫谈数据质量监控"><a href="#漫谈数据质量监控" class="headerlink" title="漫谈数据质量监控"></a>漫谈数据质量监控</h1><blockquote>
+<p>往往那些不起眼的功能，最能毁掉你的工作成果。</p>
+</blockquote>
+<p>本篇分享一些和数据质量监控相关的内容。数据质量监控是一个在快速发展的业务中最容易被牺牲和忽略的功能，但是它确实至关重要的。</p>
+<a id="more"></a>
+
+<h2 id="文章结构"><a href="#文章结构" class="headerlink" title="文章结构"></a>文章结构</h2><p>数据质量监控的意义和价值就不再谈了，本文主要讨论下面三个主题：</p>
+<ol>
+<li>数据质量监控要做哪些监控内容</li>
+<li>该怎么做</li>
+<li>数据校验</li>
+</ol>
+<p>文中会涉及到数据仓库其它的一些知识点，请参考之前的文章。</p>
+<h1 id="什么值得你监控"><a href="#什么值得你监控" class="headerlink" title="什么值得你监控"></a>什么值得你监控</h1><p>我把数据质量分成三部分来理解：</p>
+<ol>
+<li>监控</li>
+<li>告警</li>
+<li>多数据源</li>
+</ol>
+<h2 id="一、-监控"><a href="#一、-监控" class="headerlink" title="一、 监控"></a>一、 监控</h2><p>监控这一块比较大。整体来讲，我会把它分为这几块：<strong>日常监控、数据对账、性能监控</strong>。</p>
+<p><strong>日常监控</strong></p>
+<p>日常监控中最重要的一个就是数据落地检查，这应该是所有监控的一个基础，不然没数据你玩个毛啊。</p>
+<p>下面是我认为一些比较常用的监控内容：</p>
+<ol>
+<li>数据落地监控</li>
+<li>数据掉0监控：实际扩展一下就是数据量阈值监控，少于某个量就告警</li>
+<li>重复数据监控：很多表一定要监控重复数据的，这点至关重要</li>
+<li>关键指标监控</li>
+<li>数据同比环比监控</li>
+</ol>
+<p><strong>数据对账</strong></p>
+<p>这点主要会体现到实时数据上，特别是Kafka数据落地，必须要有一个监控机制来知道我们的数据落地情况。</p>
+<p>当然离线数据同样需要数据对账，对账方法有很多，比如可以和业务库来对比。</p>
+<p><strong>性能监控</strong></p>
+<p>感觉在性能监控上就是有几个点要注意：</p>
+<ol>
+<li>查询性能，比如es的某个索引，在不同时间段的查询响应速度，同理presto、hive、kylin这些的查询都需要注意一下，这点可以通过任务监控来观察。</li>
+<li>数据读写影响，机器故障影响，这点平常不太关注，不过像es这种，在写入数据的时候其实会影响读数据的，需要监控一下，并做相应调整。</li>
+</ol>
+<h2 id="二、告警"><a href="#二、告警" class="headerlink" title="二、告警"></a>二、告警</h2><p>告警就不用说了，微信、短信和电话都很有必要。</p>
+<p>定期的邮件汇总告警也很有必要。</p>
+<p>然后有很多的告警可以考虑一个告警报表系统来展示，特别像是数据量趋势这种监控内容，可视化的对比比较有效。</p>
+<h2 id="三、-多数据源"><a href="#三、-多数据源" class="headerlink" title="三、 多数据源"></a>三、 多数据源</h2><p>在目前的大数据场景下，各种开源组件引入的十分多，而且会有新的组件不停地引入，因此要考虑到对不同组件的数据监控。</p>
+<p>目前笔者接触比较多的会有Hive（presto、spark sql）、Mysql、ES、Redis、Kylin（主要是构建的cube）这些常用的，但是不能排除图数据库（neo4j、orientdb）和druid这些组件引入的可能性。</p>
+<h1 id="怎样监控"><a href="#怎样监控" class="headerlink" title="怎样监控"></a>怎样监控</h1><p>数据监控相对来讲是属于后台系统，不能算是对外的业务系统，一般重要性可能会被挑战，虽说如此，它还是值得一做的。 不过可能要换一些思路来做，如何快速地实现、并抓住核心的功能点是值得深思的一件事。</p>
+<blockquote>
+<p><em>这里不会有实现，只会有一些设计思路，欢迎来讨论。</em></p>
+</blockquote>
+<p>如图是一个整体的构思，我先分析几个个人认识比较重要的点。后面会详细地来分析。</p>
+<ol>
+<li>规则引擎：来定义各种告警规则，可能是一条sql模板，也可能是一些具体的算法。</li>
+<li>执行引擎：要来执行各种规则，同时要考虑各种数据源的差异。</li>
+<li>元数据系统：数据质量监控本来也算是元数据系统的一部分，我们这分开来讲，但是无论如何，在配置表的告警信息时，还是要和元数据系统结合的。</li>
+</ol>
+<h2 id="一、-规则引擎"><a href="#一、-规则引擎" class="headerlink" title="一、 规则引擎"></a>一、 规则引擎</h2><p>举几个典型例子：数据延迟到达、数据同比环比、数据趋势、一些定制化算法。</p>
+<h3 id="1-Sql模板"><a href="#1-Sql模板" class="headerlink" title="1. Sql模板"></a>1. Sql模板</h3><p><strong>在大多数存储引擎中，通过Sql使用的数据（比如Hive、Mysql）会是比较重要的一种数据，这种数据我们可以考虑用Sql模板。</strong></p>
+<p>我们会有一张表或者一些配置文件来定义我们的规则。简单来讲，比如说数据同比环比，我们可以写一个presto的sql模板，来和历史数据进行对比，这种sql很简单，自己写好模板就行。</p>
+<p><em>这种模板最简单，也最快，我相信能解决大部分问题。</em></p>
+<h3 id="2-元数据"><a href="#2-元数据" class="headerlink" title="2. 元数据"></a>2. 元数据</h3><p>很多数据库都是有元数据管理的，比如Hive，它的表的行数都是在元数据库中有存放的，我们可以直接通过Hive的元数据来抓取表的每天的数据量的。</p>
+<p><strong>注意：</strong>这点十分重要，它能节省我们大部分的工作，而且比较稳定，但是能满足的功能比较少。需要结合其它来使用。</p>
+<h3 id="3-自定义模板"><a href="#3-自定义模板" class="headerlink" title="3. 自定义模板"></a>3. 自定义模板</h3><p>有很多算法不是简单的sql就能搞定的，而且很多存储系统也不是所有都支持sql。比如es这种。因此就需要一些定制化的算法来实现。</p>
+<p>这方面的主要工作量应该是在执行引擎上，但是在规则引擎应该有设计到。</p>
+<h2 id="二、执行引擎"><a href="#二、执行引擎" class="headerlink" title="二、执行引擎"></a>二、执行引擎</h2><p>这块应该是比较重要的。 实现起来可以很简单，也可以很复杂。</p>
+<h3 id="1-Sql执行"><a href="#1-Sql执行" class="headerlink" title="1. Sql执行"></a>1. Sql执行</h3><p>很多规则都可以通过sql来执行的，这点在规则引擎里面提到了。</p>
+<p><strong>其实我很推荐，刚开始的比较粗糙的监控都可以这样来做。</strong> 我们提前配置好大部分的sql模板，然后需要监控哪张表了就在这张表配置一下就行。</p>
+<p>具体的执行引擎的话可以考虑presto或者spark sql，特别大的任务可以考虑hive。</p>
+<p><strong>优点：</strong></p>
+<ol>
+<li>简单，方便实现</li>
+<li>能满足大部分的需求</li>
+</ol>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>灵活度不够，比如es，对sql支持太差</li>
+<li>速度慢：很多sql执行起来会比较慢，特别是使用hive引擎的时候，会巨慢。</li>
+<li>不稳定：一些监控会不太稳定，比如重复数据监控，对一些大的表来讲，用presto这种，是很难出结果的，经常会挂掉，但是换成hive的话又会很慢。</li>
+</ol>
+<p><strong>那么如何解决？</strong></p>
+<p>解决的话，我只有下面几个思路：</p>
+<ol>
+<li>合理的任务调度，一般集群都是能容纳很多任务的，合适地调度监控任务比较重要。</li>
+<li>合理地替换执行引擎，这个下一节会提供一种方案。</li>
+<li><strong>合理的任务依赖，比如说是重复数据监控，这点必然会依赖于数据是否到达，如果数据没达到就没必要执行重复数据监控的程序。</strong></li>
+</ol>
+<h3 id="2-直接获取数据量"><a href="#2-直接获取数据量" class="headerlink" title="2. 直接获取数据量"></a>2. 直接获取数据量</h3><p>前面提到了Sql执行的一个执行效率问题，我们这节提供一个优化的方法。因为Hive目前来讲是十分重要的一种引擎了，所以单说Hive。</p>
+<p>Hive是有元数据管理的，它的元数据库中是记录Hive的所有表的记录数的，这些记录数可以直接用作数据量相关的监控，比如数据掉零、数据量环比同比、数据量趋势等。</p>
+<h3 id="3-算法执行引擎"><a href="#3-算法执行引擎" class="headerlink" title="3. 算法执行引擎"></a>3. 算法执行引擎</h3><p>很多算法可以通过自定义地方式实现，这一点实现起来就会比较复杂一些。</p>
+<p>因为定制化比较强，在设计这一块的话需要一个比较灵活的架构，这里不再展开来讲，因为在常见的数据领域里面，前两点已经能满足很多需求了。</p>
+<h3 id="4-多数据源"><a href="#4-多数据源" class="headerlink" title="4. 多数据源"></a>4. 多数据源</h3><p>多数据源这一块，在规则引擎里面需要加一些区分，因为这毕竟和元数据系统关联，区分还是比较简单。</p>
+<p>在执行的时候，可能要稍微分开来实现。不过相对来讲不是很复杂。</p>
+<h1 id="数据校验"><a href="#数据校验" class="headerlink" title="数据校验"></a>数据校验</h1><p>数据校验之前是没在意的，现在把这一块补进来。比较偏个人理解，暂时还没形成完整的知识体系。主要就是说如何判断自己的数据是正常的、可以被信任的，这一块在数据质量中应该是十分重要的。</p>
+<p>方法的话可以有交叉验证、异常波动监控等，暂时先不分享了，后面自己理清楚了再说。</p>
+<p>原文链接:<a href="https://mp.weixin.qq.com/s?__biz=MzUyMjI4MzE0MQ==&amp;mid=2247483847&amp;idx=1&amp;sn=d7c7001a72a9fc4ce578ee256afe609a&amp;ch" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzUyMjI4MzE0MQ==&amp;mid=2247483847&amp;idx=1&amp;sn=d7c7001a72a9fc4ce578ee256afe609a&amp;ch</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/02/%E6%BC%AB%E8%B0%88%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F%E7%9B%91%E6%8E%A7/" data-id="ck3ixumq5003iclwedgefdjje" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/05/%E5%87%8C%E6%99%A8%E4%B8%89%E7%82%B9/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          凌晨三点
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/01/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E4%BA%8C%EF%BC%89/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数据仓库（二）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
