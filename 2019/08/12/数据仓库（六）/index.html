@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="数据仓库（六）"><meta name="keywords" content="数据仓库,维度建模解析"><meta name="author" content="zhiyong.chen"><meta name="copyright" content="zhiyong.chen"><title>数据仓库（六） | Shadowchenxx</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#维度建模详解"><span class="toc-number">1.</span> <span class="toc-text">维度建模详解</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">zhiyong.chen</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">66</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">64</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Shadowchenxx</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">数据仓库（六）</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-12</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="维度建模详解"><a href="#维度建模详解" class="headerlink" title="维度建模详解"></a>维度建模详解</h1><p>这篇文章主要是上一篇维度建模涉及到的概念补充。<a href="[https://shadowchenxx.github.io/2019/08/08/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E4%BA%94%EF%BC%89/](https://shadowchenxx.github.io/2019/08/08/数据仓库（五）/)">传送门</a></p>
+<p><strong>1.范式</strong></p>
+<ul>
+<li>第一范式：表中字段属性不能再被拆分，分隔</li>
+<li>第二范式：满足第一范式，且表必有主键，主键外的字段对主键依赖</li>
+<li>第三范式：满足第二范式，主键外的其他字段不互相依赖</li>
+</ul>
+<a id="more"></a>
+
+<p><strong>2.度量</strong></p>
+<p>简单的说，度量就是事实，上下文和环境则称为维度。⚠️<font color=#FF0000 >脱离上下文和环境的度量是没有意义的！</font></p>
+<ul>
+<li>公司的销量如何？</li>
+<li>公司的访问情况如何？</li>
+<li>访问用户中老客的占比？</li>
+</ul>
+<p><strong>3.事实表</strong></p>
+<ul>
+<li>事务事实表（原始粒度为主）</li>
+<li>周期快照表（周期：日、周、月）</li>
+<li>累计快照事实表（拉链表、状态变化快快照）</li>
+</ul>
+<p><strong>4.维度表</strong></p>
+<p>维度在数据分析中使用的最广，但是有些同学还是搞不清楚。🐲</p>
+<ul>
+<li>维度属性就是查询条件SQL中的条件属性</li>
+<li>维度表是事实表的入口</li>
+<li>维度表的两大模型<ul>
+<li>🌟星型模型：所有维度统一连接事实表，每个维度都是均等的</li>
+<li>❄️雪花模型：在星型模型上的反范式化</li>
+</ul>
+</li>
+</ul>
+<p><strong>5.维度建模的一般流程</strong></p>
+<ul>
+<li>定义业务流程</li>
+<li>粒度确认</li>
+<li>维度确认</li>
+<li>确定事实表（如果涉及订单金额，就找订单表）</li>
+</ul>
+<p><strong>6.维度表设计</strong></p>
+<ul>
+<li>维度变化（如商品维表或类目维度的更新）<ul>
+<li>重写维度值：直接覆盖旧值</li>
+<li>插入新的维度行：插入新的维度行，使用字段state来的控制版本。但这样也会带来使用上不好的体验，加大了逻辑的复杂度</li>
+<li>插入新的维度列：状态变化比较少且固定的情况下可以使用（一般不建议使用）</li>
+</ul>
+</li>
+<li>维度层次<ul>
+<li>如类目的维表通常分为一级类目、二级类目、三级类目等。一般采用🌟星型模型的反范式话设计</li>
+</ul>
+</li>
+<li>维度一致性<ul>
+<li>两个维度若有关系，要么完全一样，要么就是在数据意义上的是另一个维度的子集</li>
+<li>维度的不一致既体现在内容的不一致，也体现在其字段属性的不一致</li>
+</ul>
+</li>
+<li>维度整合和拆分<ul>
+<li>整合需要体现在命名规范、字段类型、字段含义的一致性</li>
+<li>一般流程：公司建立一个基础的维表，包含一些公有属性。各部门或者业务线自己有自己的定义和属性，这其实会在日常的使用中带来很大的好处</li>
+</ul>
+</li>
+</ul>
+<p><strong>7.维度设计的其他概念</strong></p>
+<ul>
+<li>退化维度（如：小票编号）</li>
+<li>行为维度（如：年收入超过一定金额，购买次数超过一定数量）</li>
+<li>角色维度（事实表中多个外键指向同一个维表，如公司的role权限表）</li>
+<li>杂项维度（剩下一些小范围的离散型维度，订单类型）</li>
+<li>微型维度（解决快变超大的维表，提取使用频次较高的维度，如用户维表）<ul>
+<li>微型维度的主键关键字一般和原始表保持一致</li>
+</ul>
+</li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">zhiyong.chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="/http:/yoursite.com/2019/08/12/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E5%85%AD%EF%BC%89/">http://yoursite.com/2019/08/12/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E5%85%AD%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/">数据仓库</a><a class="post-meta__tags" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/">维度建模解析</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/08/16/Scala/"><i class="fa fa-chevron-left">  </i><span>Scala</span></a></div><div class="next-post pull-right"><a href="/2019/08/08/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E4%BA%94%EF%BC%89/"><span>数据仓库（五）</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By zhiyong.chen</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
