@@ -1,250 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+extends includes/layout.pug
 
-  
-  <title>Apache Flink vs Apache Spark[转载] | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文地址:https:&#x2F;&#x2F;www.iteblog.com&#x2F;archives&#x2F;1624.html Apache Flink是什么Flink是一款新的大数据处理引擎，目标是统一不同来源的数据处理。这个目标看起来和Spark和类似。没错，Flink也在尝试解决Spark在解决的问题。这两套系统都在尝试建立一个统一的平台可以运行批量，流式，交互式，图处理，机器学习等应用。所以，Flink和Spark的目标">
-<meta name="keywords" content="spark,flink">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Apache Flink vs Apache Spark[转载]">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;07&#x2F;29&#x2F;Apache-Flink-vs-Apache-Spark&#x2F;index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="原文地址:https:&#x2F;&#x2F;www.iteblog.com&#x2F;archives&#x2F;1624.html Apache Flink是什么Flink是一款新的大数据处理引擎，目标是统一不同来源的数据处理。这个目标看起来和Spark和类似。没错，Flink也在尝试解决Spark在解决的问题。这两套系统都在尝试建立一个统一的平台可以运行批量，流式，交互式，图处理，机器学习等应用。所以，Flink和Spark的目标">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-01T11:54:00.000Z">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-Apache-Flink-vs-Apache-Spark" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/07/29/Apache-Flink-vs-Apache-Spark/" class="article-date">
-  <time datetime="2019-07-29T11:56:44.000Z" itemprop="datePublished">2019-07-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Apache Flink vs Apache Spark[转载]
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原文地址:<a href="https://www.iteblog.com/archives/1624.html" target="_blank" rel="noopener">https://www.iteblog.com/archives/1624.html</a></p>
-<h2 id="Apache-Flink是什么"><a href="#Apache-Flink是什么" class="headerlink" title="Apache Flink是什么"></a>Apache Flink是什么</h2><p>Flink是一款新的大数据处理引擎，目标是统一不同来源的数据处理。这个目标看起来和Spark和类似。没错，Flink也在尝试解决Spark在解决的问题。这两套系统都在尝试建立一个统一的平台可以运行批量，流式，交互式，图处理，机器学习等应用。所以，Flink和Spark的目标差别并不大，他们最主要的区别在于实现的细节，后面我会重点从不同的角度对比这两者。<a id="more"></a></p>
-<h2 id="Apache-Spark-vs-Apache-Flink"><a href="#Apache-Spark-vs-Apache-Flink" class="headerlink" title="Apache Spark vs Apache Flink"></a>Apache Spark vs Apache Flink</h2><h3 id="1、抽象-Abstraction"><a href="#1、抽象-Abstraction" class="headerlink" title="1、抽象 Abstraction"></a>1、抽象 Abstraction</h3><p>Spark中，对于批处理我们有RDD,对于流式，我们有DStream，不过内部实际还是RDD.所以所有的数据表示本质上还是RDD抽象。后面我会重点从不同的角度对比这两者。在Flink中，对于批处理有DataSet，对于流式我们有DataStreams。看起来和Spark类似，他们的不同点在于：</p>
-<p><strong>(一)DataSet在运行时是表现为运行计划(runtime plans)的</strong></p>
-<p>在Spark中，RDD在运行时是表现为java objects的。通过引入Tungsten，这块有了些许的改变。但是在Flink中是被表现为logical plan(逻辑计划)的，听起来很熟悉？没错，就是类似于Spark中的dataframes。所以在Flink中你使用的类Dataframe api是被作为第一优先级来优化的。但是相对来说在Spark RDD中就没有了这块的优化了。<br>　　Flink中的Dataset，对标Spark中的Dataframe，在运行前会经过优化。在Spark 1.6，dataset API已经被引入Spark了，也许最终会取代RDD 抽象。</p>
-<p><strong>(二）Dataset和DataStream是独立的API</strong></p>
-<p>在Spark中，所有不同的API，例如DStream，Dataframe都是基于RDD抽象的。但是在Flink中，Dataset和DataStream是同一个公用的引擎之上两个独立的抽象。所以你不能把这两者的行为合并在一起操作，当然，Flink社区目前在朝这个方向努力(<code>https://issues.apache.org/jira/browse/Flink-2320</code>)，但是目前还不能轻易断言最后的结果。</p>
-<h3 id="2、内存管理"><a href="#2、内存管理" class="headerlink" title="2、内存管理"></a>2、内存管理</h3><p>一直到1.5版本，Spark都是试用java的内存管理来做数据缓存，明显很容易导致OOM或者gc。所以从1.5开始，Spark开始转向精确的控制内存的使用，这就是tungsten项目了。</p>
-<p>而Flink从第一天开始就坚持自己控制内存试用。这个也是启发了Spark走这条路的原因之一。Flink除了把数据存在自己管理的内存以外，还直接操作二进制数据。在Spark中，从1.5开始，所有的dataframe操作都是直接作用在tungsten的二进制数据上。</p>
-<h3 id="3、语言实现"><a href="#3、语言实现" class="headerlink" title="3、语言实现"></a>3、语言实现</h3><p>Spark是用scala来实现的，它提供了Java，Python和R的编程接口。Flink是java实现的，当然同样提供了Scala API<br>所以从语言的角度来看，Spark要更丰富一些。因为我已经转移到scala很久了，所以不太清楚这两者的java api实现情况。</p>
-<h3 id="4、API"><a href="#4、API" class="headerlink" title="4、API"></a>4、API</h3><p>Spark和Flink都在模仿scala的collection API.所以从表面看起来，两者都很类似。下面是分别用RDD和DataSet API实现的word count</p>
-<p>不知道是偶然还是故意的，API都长得很像，这样很方便开发者从一个引擎切换到另外一个引擎。我感觉以后这种Collection API会成为写data pipeline的标配。</p>
-<h3 id="5、Steaming"><a href="#5、Steaming" class="headerlink" title="5、Steaming"></a>5、Steaming</h3><p>Spark把streaming看成是更快的批处理，而Flink把批处理看成streaming的special case。这里面的思路决定了各自的方向，其中两者的差异点有如下这些：</p>
-<p><strong>实时 vs 近实时的角度</strong></p>
-<p>Flink提供了基于每个事件的流式处理机制，所以可以被认为是一个真正的流式计算。它非常像storm的model。<br>而Spark，不是基于事件的粒度，而是用小批量来模拟流式，也就是多个事件的集合。所以Spark被认为是近实时的处理系统。</p>
-<p>Spark streaming 是更快的批处理，而Flink Batch是有限数据的流式计算。<br>虽然大部分应用对准实时是可以接受的，但是也还是有很多应用需要event level的流式计算。这些应用更愿意选择storm而非Spark streaming，现在，Flink也许是一个更好的选择。</p>
-<p><strong>流式计算和批处理计算的表示</strong></p>
-<p>Spark对于批处理和流式计算，都是用的相同的抽象：RDD，这样很方便这两种计算合并起来表示。而Flink这两者分为了DataSet和DataStream，相比Spark，这个设计算是一个糟糕的设计。</p>
-<p><strong>对 windowing 的支持</strong></p>
-<p>因为Spark的小批量机制，Spark对于windowing的支持非常有限。只能基于process time，且只能对batches来做window。而Flink对window的支持非常到位，且Flink对windowing API的支持是相当给力的，允许基于process time,data time,record 来做windowing。我不太确定Spark是否能引入这些API，不过到目前为止，Flink的windowing支持是要比Spark好的。Steaming这部分Flink胜。</p>
-<h3 id="6、SQL-interface"><a href="#6、SQL-interface" class="headerlink" title="6、SQL interface"></a>6、SQL interface</h3><p>目前Spark-sql是Spark里面最活跃的组件之一，Spark提供了类似Hive的sql和Dataframe这种DSL来查询结构化数据，API很成熟，在流式计算中使用很广，预计在流式计算中也会发展得很快。至于Flink，到目前为止，Flink Table API只支持类似DataFrame这种DSL，并且还是处于beta状态，社区有计划增加SQL 的interface，但是目前还不确定什么时候才能在框架中用上。所以这个部分，Spark胜出。</p>
-<h3 id="7、外部数据源的整合"><a href="#7、外部数据源的整合" class="headerlink" title="7、外部数据源的整合"></a>7、外部数据源的整合</h3><p>Spark的数据源 API是整个框架中最好的，支持的数据源包括NoSql db,parquet,ORC等，并且支持一些高级的操作，例如predicate push down。Flink目前还依赖map/reduce InputFormat来做数据源聚合。这一场Spark胜。</p>
-<h3 id="8、Iterative-processing"><a href="#8、Iterative-processing" class="headerlink" title="8、Iterative processing"></a>8、Iterative processing</h3><p>Spark对机器学习的支持较好，因为可以在Spark中利用内存cache来加速机器学习算法。<br>但是大部分机器学习算法其实是一个有环的数据流，但是在Spark中，实际是用无环图来表示的，一般的分布式处理引擎都是不鼓励试用有环图的。但是Flink这里又有点不一样，Flink支持在runtime中的有环数据流，这样表示机器学习算法更有效而且更有效率。这一点Flink胜出。</p>
-<h3 id="9、Stream-as-platform-vs-Batch-as-Platform"><a href="#9、Stream-as-platform-vs-Batch-as-Platform" class="headerlink" title="9、Stream as platform vs Batch as Platform"></a>9、Stream as platform vs Batch as Platform</h3><p>Spark诞生在Map/Reduce的时代，数据都是以文件的形式保存在磁盘中，这样非常方便做容错处理。Flink把纯流式数据计算引入大数据时代，无疑给业界带来了一股清新的空气。这个idea非常类似akka-streams这种。成熟度目前的确有一部分吃螃蟹的用户已经在生产环境中使用Flink了，不过从我的眼光来看，Flink还在发展中，还需要时间来成熟。</p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>目前Spark相比Flink是一个更为成熟的计算框架，但是Flink的很多思路很不错，Spark社区也意识到了这一点，并且逐渐在采用Flink中的好的设计思路，所以学习一下Flink能让你了解一下Streaming这方面的更迷人的思路。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/29/Apache-Flink-vs-Apache-Spark/" data-id="ck3ixumo50001clwebn4r7z4i" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/" rel="tag">spark</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/07/29/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E4%B8%80%EF%BC%89/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          数据仓库（一）
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/07/26/Hive-bucket%E4%BB%8B%E7%BB%8D/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hive - bucket介绍</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
-</body>
-</html>
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug

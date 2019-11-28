@@ -1,343 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+extends includes/layout.pug
 
-  
-  <title>数据仓库之旅 | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="数据仓库之旅 本文主要从三个方面来解释数据仓库 1.什么是数据仓库 2.数仓建设的好处（为什么要建设数据仓库） 3.如何创建数仓  定义：数据管理、存储、计算、建模的一种方法论，是一种过程处理方法 特点：面向主题的、集成的、稳定的、反映历史变化的数据集合 组成：元数据、数据建模、代码实现、血缘关系、规范准则 位置：数据采集&amp;gt;数据域 &amp;gt; 数仓 &amp;gt; 数据报表&#x2F;数据分析&#x2F;数据挖掘">
-<meta name="keywords" content="数据仓库">
-<meta property="og:type" content="article">
-<meta property="og:title" content="数据仓库之旅">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;08&#x2F;27&#x2F;%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E4%B9%8B%E6%97%85&#x2F;index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="数据仓库之旅 本文主要从三个方面来解释数据仓库 1.什么是数据仓库 2.数仓建设的好处（为什么要建设数据仓库） 3.如何创建数仓  定义：数据管理、存储、计算、建模的一种方法论，是一种过程处理方法 特点：面向主题的、集成的、稳定的、反映历史变化的数据集合 组成：元数据、数据建模、代码实现、血缘关系、规范准则 位置：数据采集&amp;gt;数据域 &amp;gt; 数仓 &amp;gt; 数据报表&#x2F;数据分析&#x2F;数据挖掘">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-27T08:39:38.000Z">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-数据仓库之旅" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/08/27/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E4%B9%8B%E6%97%85/" class="article-date">
-  <time datetime="2019-08-27T08:34:16.000Z" itemprop="datePublished">2019-08-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      数据仓库之旅
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>数据仓库之旅</strong></p>
-<p>本文主要从三个方面来解释数据仓库</p>
-<p>1.什么是数据仓库</p>
-<p>2.数仓建设的好处（为什么要建设数据仓库）</p>
-<p>3.如何创建数仓</p>
-<ul>
-<li>定义：数据管理、存储、计算、建模的一种方法论，是一种过程处理方法</li>
-<li>特点：面向主题的、集成的、稳定的、反映历史变化的数据集合</li>
-<li>组成：元数据、数据建模、代码实现、血缘关系、规范准则</li>
-<li>位置：数据采集&gt;数据域 &gt; 数仓 &gt; 数据报表/数据分析/数据挖掘 </li>
-</ul>
-<a id="more"></a>
-
-<p><strong>数据库与数仓的主要区别</strong></p>
-<table>
-<thead>
-<tr>
-<th>数据库</th>
-<th>数据仓库</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>面向事务、记录状态</td>
-<td>分析决策、面向主题</td>
-</tr>
-<tr>
-<td>业务系统</td>
-<td>服务分析师</td>
-</tr>
-<tr>
-<td>最新状态业务数据</td>
-<td>存储历史数据</td>
-</tr>
-<tr>
-<td>严格遵守范式，避免冗余</td>
-<td>为方便统计可以适当冗余</td>
-</tr>
-<tr>
-<td>容量偏小</td>
-<td>容量偏大</td>
-</tr>
-<tr>
-<td>mysql、oracle</td>
-<td>hive（大数据分布式）、oracle（传统数仓）</td>
-</tr>
-</tbody></table>
-<p><strong>数仓的常见问题</strong></p>
-<p>1.数据资产模糊</p>
-<ul>
-<li>不知道要什么数据，找谁要数据</li>
-<li>数据如何生成，如何更新</li>
-<li>数据存储、计算资源缺乏必要信息</li>
-</ul>
-<p>2.数据质量低</p>
-<ul>
-<li>字段命名不规范、口径不一致</li>
-<li>条件、口径不一致带来的算法不一致</li>
-</ul>
-<p>3.重复建设</p>
-<ul>
-<li>无中间表，或中间表的建设差，开发周期长</li>
-<li>代码臃肿</li>
-<li>从最底层取数，带来的计算资源的浪费，同时产生数据口径不一致问题</li>
-</ul>
-<p>4.问题定位困难，周期长</p>
-<ul>
-<li>上下游依赖混乱</li>
-<li>人物上线容易，下线难，生命周期难以管理</li>
-<li>复杂问题耦合</li>
-</ul>
-<p>5.频繁临时性需求</p>
-<ul>
-<li>多维拆解</li>
-<li>同质类似需求：重构、固化、模版、培养提高需求提出人的能力</li>
-</ul>
-<blockquote>
-<p>虽然数仓能带来诸多的好处，但是这是一个非常复杂的过程。需要一些支持系统的配合，比如元数据管理，调度系统等。且并不是所有的业务系统就需要数仓，需要根据业务发展所处的状态和未来的发展趋势以及分析决策的复杂度综合评估。</p>
-</blockquote>
-<blockquote>
-<p>数仓可以不做，要做的话一定要提前规划和基本的规范制定。自由散漫、野性生长的数仓有不如无。</p>
-</blockquote>
-<p><strong>如何建设数仓</strong></p>
-<p>数仓的本质：支撑分析决策，面向业务指标，同时兼顾其他可能的扩展情况，是数仓整体的思路</p>
-<p>数仓对上层数据应用主要体现在三个方面：</p>
-<ul>
-<li>业务监控数据（报表）</li>
-<li>数据挖掘（用户画像、推荐）</li>
-<li>数据分析（业务诊断、提升优化）</li>
-</ul>
-<p>1.业务监控数据</p>
-<p>业务监控支持是数仓建设，主要也是醉基础的服务内容，首先梳理服务流程、划分主题、分析指标、自顶向下建设</p>
-<ul>
-<li>对指标体系进行分类，对指标分类来建设数据主题集市</li>
-<li>对维度进行抽象，根据抽象出的维度来建设维表，然后根据维表生成方式的配置调度策略，是线下录入还是线上生成，更新机制以及更新方式，以及维度的变化</li>
-</ul>
-<p>2.数据分析支持</p>
-<p>一般以🌟星型模型为主，一般采用退维的方法建设集市，其实还会涉及款表设计，方便分析</p>
-<p>3.数据挖掘支持</p>
-<p>对用户行为宽表的要求进一步强化，同时兼顾维度的丰富性</p>
-<p><strong>分模块进行数仓建设</strong></p>
-<p>1.数仓规划策略</p>
-<ul>
-<li>分层、分线、分主题（数据集市）</li>
-</ul>
-<p>2.数仓的设计模型</p>
-<ul>
-<li>ER模型、维度模型、datavault</li>
-</ul>
-<p>3.调度建设</p>
-<ul>
-<li>调度系统</li>
-</ul>
-<p>4.数仓规范建设</p>
-<ul>
-<li>表命令规范、字段规范、代码开发规范、人物调度规范</li>
-</ul>
-<p><strong>写在最后</strong> </p>
-<p>原本想整理一下之前的数仓，写了两天，写得很乱，抱歉。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/27/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E4%B9%8B%E6%97%85/" data-id="ck3ixumpq002tclwe5b6laje3" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/08/29/Scala%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Scala
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/08/23/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Spark源码分析</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
-</body>
-</html>
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug

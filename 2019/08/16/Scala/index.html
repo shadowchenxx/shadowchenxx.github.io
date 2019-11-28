@@ -1,379 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+extends includes/layout.pug
 
-  
-  <title>Scala | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Scala编程基础Scala是一个面向对象的函数式编程语言，在Scala中，一切皆函数。 函数式编程的优点：  提高生产效率，代码量更小。  更容易编写多并发或多进程的应用。  带来更少的bug，代码量小了，bug自然就小了。">
-<meta name="keywords" content="Scala">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Scala">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;08&#x2F;16&#x2F;Scala&#x2F;index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Scala编程基础Scala是一个面向对象的函数式编程语言，在Scala中，一切皆函数。 函数式编程的优点：  提高生产效率，代码量更小。  更容易编写多并发或多进程的应用。  带来更少的bug，代码量小了，bug自然就小了。">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-16T03:34:36.000Z">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-Scala" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/08/16/Scala/" class="article-date">
-  <time datetime="2019-08-16T03:28:06.000Z" itemprop="datePublished">2019-08-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Scala
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Scala编程基础"><a href="#Scala编程基础" class="headerlink" title="Scala编程基础"></a>Scala编程基础</h1><p>Scala是一个面向对象的函数式编程语言，在Scala中，一切皆函数。</p>
-<p>函数式编程的优点：</p>
-<ul>
-<li><p>提高生产效率，代码量更小。</p>
-</li>
-<li><p>更容易编写多并发或多进程的应用。</p>
-</li>
-<li><p>带来更少的bug，代码量小了，bug自然就小了。</p>
-<a id="more"></a>
-
-</li>
-</ul>
-<h2 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h2><p>Scala并没有基本数据类型，Scala的每一个基础类型都是一个类。在编译阶段，Scala编译器会自动将Scala基础类型转换为Java基本类型。</p>
-<p><strong>关键：Scala的基础类型的首字母都是大写的，如果写成小写会出现编译错误，这真是一个奇葩的特点。</strong></p>
-<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>Scala有两种类型的变量：</p>
-<ul>
-<li>可变变量，使用<code>var</code>定义。</li>
-<li>不可变变量，使用<code>val</code>定义。</li>
-</ul>
-<p>可变变量可以多次赋值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">var a&#x3D;20</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">a&#x3D;10</span></pre></td></tr></table></figure>
-
-<p>而不可变变量，初始化后不能再重新赋值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val b&#x3D;10</span></pre></td></tr></table></figure>
-
-<p>对于函数式编程，最好不要使用可变变量。</p>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>在Scala中，函数和变量没有什么区别，它可以作为变量的值，可以在其他函数体中定义，可以作为函数的返回值，可以作为函数的参数。</p>
-<p>Scala中用关键字<code>def</code>来定义函数。</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span></span>(a:<span class="type">Int</span>, b:<span class="type">Int</span>): <span class="type">Int</span>=&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">val</span> sum=a+b</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> sum</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p><code>add</code>是函数名；括号中的<code>a</code>和<code>b</code>是形参，<code>Int</code>是形参类型；括号外的<code>lnt</code>是函数返回值类型；接着一个<code>=</code>号跟着大括号是函数体。</p>
-<p>Scala中每条语句可以由分号<code>;</code>结尾，也可以不写，当然不写是最方便的，怎么方便怎么来。</p>
-<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>方法是指类的成员函数，这一点和c++/Java类似。</p>
-<h2 id="局部函数"><a href="#局部函数" class="headerlink" title="局部函数"></a>局部函数</h2><p>在其他函数或者方法中定义的函数称为局部函数，它只在其定义的函数内可见，即只有局部可见性。</p>
-<h2 id="高阶方法"><a href="#高阶方法" class="headerlink" title="高阶方法"></a>高阶方法</h2><p>把函数作为输入参数的方法称为高阶方法。类似的，高阶函数是指把函数作为参数的函数。</p>
-<p>一个高阶函数的例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">def encode(n: Int, f:(Int) &#x3D;&gt; Long): Long &#x3D;&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      val x&#x3D;n*10</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">      f(x)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p><code>函数encode</code>接收两个参数，返回一个<code>Long类型</code>的值。一个参数是<code>Int</code>类型；另一个参数是<code>函数f</code>，<code>函数f</code>接收一个<code>Int类型</code>的参数，返回的是<code>Long类型</code>的值</p>
-<h2 id="函数字面量"><a href="#函数字面量" class="headerlink" title="函数字面量"></a>函数字面量</h2><p>函数字面量是指源代码中的匿名函数，它可以作为高阶方法或高阶函数的参数，也可以赋值给变量。</p>
-<p>函数字面量的定义由处于圆括号中的输入函数列表、右箭头和函数体构成，下面是一个函数字面量的例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">(x: Int) &#x3D;&gt; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      x+100</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>闭包就是可以使用非局部变量的函数字面量。</p>
-<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>类是面向对象编程的重要概念，是一组具有相同属性和行为的事物的抽象。Scala中的类和Java类似，它由字段和方法组成，字段就是属性，方法就是行为函数。</p>
-<p>Scala使用关键字<code>class</code>来定义一个类， 在Scala中的类没有访问控制这种操作，更为简洁：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Car</span>(<span class="params">mk: <span class="type">String</span>, ml: <span class="type">String</span>, cr: <span class="type">String</span></span>)</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">val</span> make=mk  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">val</span> model=ml  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">var</span> color=cr  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">repaint</span></span>(newColor: <span class="type">String</span>) = &#123;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        color=newColor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>类的实例使用关键字<code>new</code>创建</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val mustang&#x3D;new Car(&quot;Ford&quot;, &quot;Mustang&quot;, &quot;Red&quot;)</span></pre></td></tr></table></figure>
-
-<p>因为Scala运行在JVM之上，所以不用显示删除对象，Java的垃圾回收器会自动删除那些不再使用的对象。</p>
-<h2 id="单例"><a href="#单例" class="headerlink" title="单例"></a>单例</h2><p>在面向对象编程中一个常见的设计模式就是单例，它是指那些<strong>只可以实例化一次的类</strong>。Scala中使用关键字<code>object</code>来定义单例对象</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">DatabaseConnection</span></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">open</span></span>(name: <span class="type">String</span>) : <span class="type">Int</span> =&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">read</span></span>(streamId: <span class="type">Int</span>) : <span class="type">Array</span>[<span class="type">Byte</span>] = &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">close</span></span>(): <span class="type">Unit</span>=&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"> &#125;</span></pre></td></tr></table></figure>
-
-<h2 id="样本类"><a href="#样本类" class="headerlink" title="样本类"></a>样本类</h2><p>样本类是指使用<code>case</code>修饰符的类，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">case class Message(from: String, to: String, content: String)</span></pre></td></tr></table></figure>
-
-<p>对于样本类，Scala提供了一些语法上的便利</p>
-<ul>
-<li>不必使用关键字<code>new</code>就可以创建样本类的实例</li>
-<li>样本类参数列表中的所有参数隐式获得<code>val</code>前缀</li>
-<li>支持模式匹配</li>
-</ul>
-<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><p>模式匹配是Scala中的概念，它类似于其他语言的<code>switch语句</code>。考虑一个以颜色的字符串作为参数的简单函数：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">colorToNumber</span></span>(color: <span class="type">String</span>): <span class="type">Int</span> =&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">val</span> num=color <span class="keyword">match</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Red"</span> =&gt; <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Blue"</span>=&gt; <span class="number">2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Green"</span>=&gt; <span class="number">3</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Yellow"</span> =&gt; <span class="number">4</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> _ =&gt;<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> num</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>模式匹配的几个特性：</p>
-<ul>
-<li>Scala使用关键字<code>match</code>代替关键字<code>switch</code>。</li>
-<li>下划线代表默认选项。</li>
-<li>每一个选项不需要<code>break语句</code>，匹配选项后，其他的选项不会被执行。</li>
-<li>每一个选项对应一个表达式，每个表达式返回一个值。</li>
-</ul>
-<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><p>Scala没有内置操作符，在Scala中，每个基础类型都是一个类，每一个操作符都是一个方法。使用操作符等价于调用方法。例如：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> a=<span class="number">10</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> b=<span class="number">20</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> c=a+b</span></pre></td></tr></table></figure>
-
-<p>这里的<code>＋</code>并不是Scala的内置操作符，它是定义在<code>Int</code>类中的一个方法。Scala允许以操作符的方式来调用方法。</p>
-<h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>Scala的特征类似于Java中的接口，然而，不同于Java接口，Scala的特征可以有方法的实现，而且它还可以有字段。</p>
-<p>特征看上去像抽象类，它们都有字段和方法。区别在于一个类只能继承一个抽象类，但可以继承多个特征。</p>
-<p>Scala中的特征使用关键字<code>trait</code>定义：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Shape</span></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">area</span></span>(): <span class="type">Int</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Square</span>(<span class="params">length: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">Shape</span></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">area=length*length</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="function">&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">class</span> <span class="title">Rectangle</span></span>(length: <span class="type">Int</span>, width: <span class="type">Int</span>) <span class="keyword">extends</span> <span class="type">Shape</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">area=length*width</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="function">&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">val</span> <span class="title">square</span> </span>= <span class="keyword">new</span> <span class="type">Square</span>(<span class="number">10</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> area = square.area</span></pre></td></tr></table></figure>
-
-<h2 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h2><p>元组是一个容器，用于存放多个不同类型的元素，它是不可变的。即创建元组之后，便不可修改。</p>
-<p>元组是一个用小括号括起来的大杂烩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val a&#x3D;(10, true, &quot;harry&quot;)</span></pre></td></tr></table></figure>
-
-<p>元组的下标从1开始的，访问元组的元素如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">println(a._1)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">println(a._2)</span></pre></td></tr></table></figure>
-
-<p>为什么下标数字前面有一个碍眼的下划线？？鬼知道这种骚操作是为何。反正没下划线就会报错~</p>
-<h2 id="Option类型"><a href="#Option类型" class="headerlink" title="Option类型"></a>Option类型</h2><p>Option是一种数据类型，用来表示值是可选的，即要么无值要么有值。它要么是样本类<code>some</code>的实例，要么是单例对象<code>None</code>的实例。</p>
-<p>Option类型可以在函数或方法中作为值返回。返回<code>some(x)</code>表示有值，返回<code>None</code>表示无值。从函数返回的Option类型对象可以用于模式匹配中：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">colorCode</span></span>(color: <span class="type">String</span>): <span class="type">Option</span>[<span class="type">Int</span>] =&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    color <span class="keyword">match</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Red"</span> =&gt; <span class="type">Some</span>(<span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Blue"</span>=&gt; <span class="type">Some</span>(<span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Green"</span>=&gt; <span class="type">Some</span>(<span class="number">3</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="string">"Yellow"</span> =&gt; <span class="type">Some</span>(<span class="number">4</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> _ =&gt; <span class="type">None</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> code = colorCode(<span class="string">"orange"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">code <span class="keyword">match</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">case</span> <span class="type">Some</span>(c) =&gt; println(<span class="string">"code for orange is: "</span> + c)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">case</span> <span class="type">None</span> =&gt; println(<span class="string">"code not defined for orange"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>使用Option类型有助于避免空指针异常。</p>
-<h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>集合是一种容器类的数据结构。Scala有丰富的集合类，集合类包含各种类型，所有的集合类都有同样的接口。</p>
-<p>Scala的集合类可以分为三类：</p>
-<ul>
-<li>序列</li>
-<li>集合</li>
-<li>map</li>
-</ul>
-<h4 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h4><p>序列表示有先后次序的元素序列，可根据位置来访问集合中的元素。<br>序列又分为三种：</p>
-<ul>
-<li>数组</li>
-<li>列表</li>
-<li>向量</li>
-</ul>
-<h6 id="数组Array"><a href="#数组Array" class="headerlink" title="数组Array"></a>数组Array</h6><p>数组是有索引的元素序列，所有的元素的数据类型相同，数组是可变的，可以修改元素但不能增加元素，即数组是定长的。</p>
-<p>Scala中的数组类似于其他语言的数组，数组索引从0开始，通过索引访问或修改元素：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> arr = <span class="type">Array</span>(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span> ,<span class="number">40</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">println(arr(<span class="number">0</span>))</span></pre></td></tr></table></figure>
-
-<h6 id="列表List"><a href="#列表List" class="headerlink" title="列表List"></a>列表List</h6><p>列表是一个线性的元素序列，存放一堆数据类型相同的元素，列表是不可变的，即创建后不可修改。</p>
-<p>创建列表的几种方法：</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> a=<span class="type">List</span>(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> b=(<span class="number">1</span> to <span class="number">100</span>).toList</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> c=someArray.toList</span></pre></td></tr></table></figure>
-
-<p>关于列表的几种操作：</p>
-<ul>
-<li>访问第一个元素使用<code>head方法</code>。</li>
-<li>访问第一个元素之后的所有元素使用<code>tail方法</code>。</li>
-<li>判断列表是否为空，使用<code>isEmpty方法</code>。当列表为空时返回<code>true</code></li>
-</ul>
-<h6 id="向量Vector"><a href="#向量Vector" class="headerlink" title="向量Vector"></a>向量Vector</h6><p>向量是结合了列表和数组的优点的类，根据索引访问元素占用固定的时间。向量支持快速修改和访问任意位置的元素：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val v1 &#x3D; Vector(0, 10, 20, 30)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">val v2 &#x3D; v1 :+ 50  &#x2F;&#x2F; 在向量末尾添加元素50</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">val v3 &#x3D; v1(3)</span></pre></td></tr></table></figure>
-
-<h4 id="集合Set"><a href="#集合Set" class="headerlink" title="集合Set"></a>集合Set</h4><p>集合是一个无序的集合，且每个元素都不同，没用索引。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val f &#x3D; Set(1, 2, 3 )</span></pre></td></tr></table></figure>
-
-<p>集合支持两种基本操作：</p>
-<ul>
-<li><code>contains</code>： 如果集合中包含这个元素，则返回<code>true</code>，并将这个元素作为参数传递过来</li>
-<li><code>isEmpty</code>： 如果当前集合为空，则返回<code>true</code></li>
-</ul>
-<h4 id="map"><a href="#map" class="headerlink" title="map"></a>map</h4><p>map是一个键-值对集合，在其他语言中，map也叫做字典。即根据键找出相应的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">val a &#x3D; Map(&quot;USA&quot; -&gt; &quot;zhazha&quot;, &quot;UK&quot; -&gt; &quot;London&quot;, &quot;India&quot; -&gt; &quot;New Delhi&quot;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">val indiaCapital &#x3D; a(&quot;India&quot;)</span></pre></td></tr></table></figure>
-
-<h4 id="注意：Scala的各种集合类都是使用小括号，没有中括号和大括号！"><a href="#注意：Scala的各种集合类都是使用小括号，没有中括号和大括号！" class="headerlink" title="注意：Scala的各种集合类都是使用小括号，没有中括号和大括号！"></a>注意：Scala的各种集合类都是使用小括号，没有中括号和大括号！</h4><h2 id="集合类上的高阶方法"><a href="#集合类上的高阶方法" class="headerlink" title="集合类上的高阶方法"></a>集合类上的高阶方法</h2><p>Scala集合的强大之处就在于这些高阶方法，这些高阶方法把函数当做参数。</p>
-<h4 id="map方法"><a href="#map方法" class="headerlink" title="map方法"></a>map方法</h4><p>map方法的参数是一个函数，它将这个函数作用于集合中的每一个元素，返回由其返回值所组成的集合。</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> xs = <span class="type">List</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> ys = xs.map((x: <span class="type">Int</span>) =&gt; x*<span class="number">10.0</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">println(ys)</span></pre></td></tr></table></figure>
-
-<p>输出如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">scala&gt; println(ys)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">List(10.0, 20.0, 30.0, 40.0)</span></pre></td></tr></table></figure>
-
-<h4 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h4><p>Scala集合的flatMap方法类似于map，它的参数是一个函数，它把这个函数作用于集合中的每一个元素，返回另外一个集合。</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> line = <span class="string">"Scala is fun"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> <span class="type">SingleSpace</span> = <span class="string">" "</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> words = line.split(<span class="type">SingleSpace</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> array = words.flatMap(_.toList)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">array</span></pre></td></tr></table></figure>
-
-<p>输出结果为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">scala&gt; array</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">res4: Array[Char] &#x3D; Array(S, c, a, l, a, i, s, f, u, n)</span></pre></td></tr></table></figure>
-
-<h2 id="Scala版的hello-world"><a href="#Scala版的hello-world" class="headerlink" title="Scala版的hello world"></a>Scala版的hello world</h2><p>一个单独的Scala应用程序需要一个具有<code>main方法</code>的单例对象。这个<code>main方法</code>以一个<code>Array[String]</code>类型的参数作为输入，它不需要返回值，它是这个Scala程序的入口，这个有<code>main方法</code>的单例可以随便起名。</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">HelloWorld</span></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">/*</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    这是我的第一个Scala程序</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>])&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        println(<span class="string">"hello world!"</span>) <span class="comment">// 输出hello world</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"> &#125;</span></pre></td></tr></table></figure>
-
-<p>Scala源代码文件以<code>.scala</code>作为后缀名，依照惯例，一般以代码中的赖明或者单例名作为文件名，比如上面的代码文件应该命名为<code>HelloWorld.scala</code>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/16/Scala/" data-id="ck3ixumog000fclweh08a8kh6" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/08/23/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Spark源码分析
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/08/12/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E5%85%AD%EF%BC%89/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">数据仓库（六）</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
-</body>
-</html>
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug

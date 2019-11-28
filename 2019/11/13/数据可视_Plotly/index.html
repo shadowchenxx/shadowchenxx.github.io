@@ -1,236 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+extends includes/layout.pug
 
-  
-  <title>数据可视化—Plotly | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近简单学习了一些统计学和数据可视化的相关内容，这里简单记录一下。 1.描述性统计">
-<meta name="keywords" content="数据可视化,统计学">
-<meta property="og:type" content="article">
-<meta property="og:title" content="数据可视化—Plotly">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;13&#x2F;%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly&#x2F;index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="最近简单学习了一些统计学和数据可视化的相关内容，这里简单记录一下。 1.描述性统计">
-<meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;sta_week2.jpg">
-<meta property="og:updated_time" content="2019-11-13T10:29:24.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;shadowchenxx&#x2F;markdown_pic&#x2F;master&#x2F;pictures&#x2F;sta_week2.jpg">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-数据可视_Plotly" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/" class="article-date">
-  <time datetime="2019-11-13T10:18:44.000Z" itemprop="datePublished">2019-11-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      数据可视化—Plotly
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近简单学习了一些统计学和数据可视化的相关内容，这里简单记录一下。</p>
-<h3 id="1-描述性统计"><a href="#1-描述性统计" class="headerlink" title="1.描述性统计"></a>1.描述性统计</h3><p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/sta_week2.jpg" alt="描述性统计"></p>
-<a id="more"></a>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats <span class="keyword">as</span> sts</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"=========描述性统计学习========\n"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"算数平均值："</span>+str(np.mean(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"中位数："</span>+str(np.median(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 函数作用：返回传入数组/矩阵中最常出现的成员以及出现的次数。</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 如果多个成员出现次数一样多，返回值小的那个</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"众数："</span>+str(sts.mode(nums)[<span class="number">0</span>][<span class="number">0</span>])+<span class="string">'  出现了：'</span>+str(sts.mode(nums)[<span class="number">1</span>][<span class="number">0</span>])+<span class="string">'次'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"几何平均数："</span>+str(sts.gmean(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    a = [<span class="number">70</span>,<span class="number">80</span>,<span class="number">90</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    w = [<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"加权平均数："</span>+str(np.average(a,weights=w)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"方差："</span>+str(np.var(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"标准差："</span>+str(np.std(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"极差："</span>+str(np.ptp(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 平均差</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 四分位差</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"四分位 75%："</span>+str(np.percentile(nums,<span class="number">75</span>)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"四分位 25%："</span>+str(np.percentile(nums,<span class="number">25</span>)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"四分位："</span>+str(np.percentile(nums,<span class="number">75</span>) - np.percentile(nums,<span class="number">25</span>)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># print("四分位："+str(sts.(nums,75) - sts.(nums,25)))</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 异众比率</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"异众系数："</span>+str(<span class="number">1</span>-sts.mode(nums)[<span class="number">1</span>][<span class="number">0</span>]/len(nums)  ))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 离散系数</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"离散系数："</span>+str(np.std(nums)/np.mean(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 偏态系数</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"偏态系数："</span>+str(sts.skew(nums)))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">    <span class="comment"># 峰态系数</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">"峰度系数："</span>+str(sts.kurtosis(nums)))</span></pre></td></tr></table></figure>
-
-<h3 id="2-可视化"><a href="#2-可视化" class="headerlink" title="2.可视化"></a>2.可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">'/Users/chenzhiyong/data/nz_weather.csv'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">data.head()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">line1 = go.Scatter(x=data[<span class="string">'DATE'</span>], y=data[<span class="string">'Auckland'</span>], name=<span class="string">'Auckland'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">line2 = go.Scatter(x=data[<span class="string">'DATE'</span>], y=data[<span class="string">'Wellington'</span>], name=<span class="string">'Wellington'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure([line1, line2])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">fig.update_layout(</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    title = <span class="string">'nz weather'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    xaxis_title = <span class="string">'Date'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    yaxis_title = <span class="string">'Weather'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#data_2010 = data[(data['DATE'] &gt;= '2010-01') &amp; (data['DATE'] &lt; '2011-01')]</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">bar1 = go.Bar(x=data_2010[<span class="string">'DATE'</span>], y=data_2010[<span class="string">'Auckland'</span>], text=data_2010[<span class="string">'Auckland'</span>],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">             textposition = <span class="string">'outside'</span>, name = <span class="string">'Auckland'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">bar2 = go.Bar(x=data_2010[<span class="string">'DATE'</span>], y=data_2010[<span class="string">'Wellington'</span>], text = data_2010[<span class="string">'Auckland'</span>],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">             textposition = <span class="string">'outside'</span>, name = <span class="string">'Wellington'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure([bar1, bar2])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">fig.update_layout(</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    title = <span class="string">'nz weather'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">    xaxis_title = <span class="string">'Date'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    yaxis_title = <span class="string">'Weather'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">hist = go.Histogram(x = data[<span class="string">'Auckland'</span>], xbins = &#123;<span class="string">'size'</span>: <span class="number">10</span>&#125;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure(hist)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">fig.update_layout(bargap = <span class="number">0.1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">'./data/iris.csv'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">data.head()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">SepalLength	SepalWidth	PetalLength	PetalWidth	Name</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>	<span class="number">5.1</span>	<span class="number">3.5</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>	<span class="number">4.9</span>	<span class="number">3.0</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line"><span class="number">2</span>	<span class="number">4.7</span>	<span class="number">3.2</span>	<span class="number">1.3</span>	<span class="number">0.2</span>	Iris-setosa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>	<span class="number">4.6</span>	<span class="number">3.1</span>	<span class="number">1.5</span>	<span class="number">0.2</span>	Iris-setosa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span>	<span class="number">5.0</span>	<span class="number">3.6</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#data.groupby('Name').count().index</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">46</span></pre></td><td class="code"><pre><span class="line">name_to_color = &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">47</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'Iris-setosa'</span>: <span class="number">0</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">48</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'Iris-versicolor'</span>: <span class="number">1</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">49</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'Iris-virginica'</span>: <span class="number">2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">50</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">51</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">52</span></pre></td><td class="code"><pre><span class="line">data[<span class="string">'color'</span>] = data[<span class="string">'Name'</span>].map(name_to_color)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">53</span></pre></td><td class="code"><pre><span class="line">data.head()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">54</span></pre></td><td class="code"><pre><span class="line">SepalLength	SepalWidth	PetalLength	PetalWidth	Name	color</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">55</span></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>	<span class="number">5.1</span>	<span class="number">3.5</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">56</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>	<span class="number">4.9</span>	<span class="number">3.0</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">57</span></pre></td><td class="code"><pre><span class="line"><span class="number">2</span>	<span class="number">4.7</span>	<span class="number">3.2</span>	<span class="number">1.3</span>	<span class="number">0.2</span>	Iris-setosa	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">58</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>	<span class="number">4.6</span>	<span class="number">3.1</span>	<span class="number">1.5</span>	<span class="number">0.2</span>	Iris-setosa	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">59</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span>	<span class="number">5.0</span>	<span class="number">3.6</span>	<span class="number">1.4</span>	<span class="number">0.2</span>	Iris-setosa	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">60</span></pre></td><td class="code"><pre><span class="line">line = go.Scatter(x = data[<span class="string">'SepalLength'</span>], y = data[<span class="string">'SepalWidth'</span>], </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">61</span></pre></td><td class="code"><pre><span class="line">                  mode = <span class="string">'markers'</span>, marker = &#123;<span class="string">'color'</span>: data[<span class="string">'color'</span>]&#125;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">62</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure(line)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">63</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">64</span></pre></td><td class="code"><pre><span class="line">plotly.express</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">65</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> plotly.express <span class="keyword">as</span> px</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">66</span></pre></td><td class="code"><pre><span class="line">fig = px.scatter(data, x = <span class="string">'SepalLength'</span>, y = <span class="string">'SepalWidth'</span>, color = <span class="string">'Name'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">67</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">68</span></pre></td><td class="code"><pre><span class="line">fig = px.scatter(data, x = <span class="string">'SepalLength'</span>, y = <span class="string">'SepalWidth'</span>, color = <span class="string">'Name'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">69</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">70</span></pre></td><td class="code"><pre><span class="line">fig = px.scatter_matrix(data, color = <span class="string">'Name'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">71</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">72</span></pre></td><td class="code"><pre><span class="line">fig = px.scatter_matrix(data, dimensions = [<span class="string">'SepalLength'</span>,<span class="string">'SepalWidth'</span>,<span class="string">'PetalLength'</span>,<span class="string">'PetalWidth'</span>], color = <span class="string">'Name'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">73</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">74</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>D</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">75</span></pre></td><td class="code"><pre><span class="line">data3d = pd.read_csv(<span class="string">'./data/3d-line1.csv'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">76</span></pre></td><td class="code"><pre><span class="line">data3d.head()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">77</span></pre></td><td class="code"><pre><span class="line">x	y	z	color</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">78</span></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>	<span class="number">100.000000</span>	<span class="number">0.613222</span>	<span class="number">0.734706</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">79</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>	<span class="number">99.238875</span>	<span class="number">0.589852</span>	<span class="number">0.781320</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">80</span></pre></td><td class="code"><pre><span class="line"><span class="number">2</span>	<span class="number">99.559608</span>	<span class="number">0.599743</span>	<span class="number">0.762566</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">81</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>	<span class="number">97.931425</span>	<span class="number">0.549296</span>	<span class="number">0.859966</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">82</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span>	<span class="number">96.837832</span>	<span class="number">0.515613</span>	<span class="number">0.927150</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">83</span></pre></td><td class="code"><pre><span class="line">line = go.Scatter3d(x = data3d[<span class="string">'x'</span>], y = data3d[<span class="string">'y'</span>], z = data3d[<span class="string">'z'</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">84</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure(line)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">85</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">86</span></pre></td><td class="code"><pre><span class="line">line = go.Scatter3d(x = data3d[<span class="string">'x'</span>], y = data3d[<span class="string">'y'</span>], z = data3d[<span class="string">'z'</span>], mode = <span class="string">'lines'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">87</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure(line)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">88</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">89</span></pre></td><td class="code"><pre><span class="line">line = go.Scatter3d(x = data3d[<span class="string">'x'</span>], y = data3d[<span class="string">'y'</span>], z = data3d[<span class="string">'z'</span>], </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">90</span></pre></td><td class="code"><pre><span class="line">                    mode = <span class="string">'markers'</span>, marker = &#123;<span class="string">'size'</span>: <span class="number">2</span>, <span class="string">'color'</span>: <span class="string">'red'</span>&#125;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">91</span></pre></td><td class="code"><pre><span class="line">fig = go.Figure(line)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">92</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">93</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> plotly.express <span class="keyword">as</span> px</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">94</span></pre></td><td class="code"><pre><span class="line">data3d.head()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">95</span></pre></td><td class="code"><pre><span class="line">x	y	z	color</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">96</span></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>	<span class="number">100.000000</span>	<span class="number">0.613222</span>	<span class="number">0.734706</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">97</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>	<span class="number">99.238875</span>	<span class="number">0.589852</span>	<span class="number">0.781320</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">98</span></pre></td><td class="code"><pre><span class="line"><span class="number">2</span>	<span class="number">99.559608</span>	<span class="number">0.599743</span>	<span class="number">0.762566</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">99</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>	<span class="number">97.931425</span>	<span class="number">0.549296</span>	<span class="number">0.859966</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">100</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span>	<span class="number">96.837832</span>	<span class="number">0.515613</span>	<span class="number">0.927150</span>	<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">101</span></pre></td><td class="code"><pre><span class="line">fig = px.scatter_3d(data3d, x = <span class="string">'x'</span>, y = <span class="string">'y'</span>, z = <span class="string">'z'</span>, color = <span class="string">'color'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">102</span></pre></td><td class="code"><pre><span class="line">fig.show()</span></pre></td></tr></table></figure>
-
-<p>后面会补充3d和地图的使用。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/" data-id="ck3ixumq1003bclwe4oi02ujw" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          hive中复杂数据结构
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">关于幸福</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/51vpa/" rel="tag">51vpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Budckets/" rel="tag">Budckets</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataFrame/" rel="tag">DataFrame</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decision-tree/" rel="tag">Decision_tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Decorator/" rel="tag">Decorator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flume/" rel="tag">Flume</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/" rel="tag">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kimball/" rel="tag">Kimball</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/" rel="tag">Spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">Spark源码分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aliyun/" rel="tag">aliyun</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bayes/" rel="tag">bayes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-engineer/" rel="tag">data_engineer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datetime/" rel="tag">datetime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/" rel="tag">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive%E4%BC%98%E5%8C%96/" rel="tag">hive优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k-means/" rel="tag">k-means</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mapreduce/" rel="tag">mapreduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neural-network/" rel="tag">neural network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/presto/" rel="tag">presto</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sed/" rel="tag">sed</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="tag">sql无法解决的问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/svm/" rel="tag">svm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat8/" rel="tag">tomcat8</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-profile/" rel="tag">user profile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/word-cloud/" rel="tag">word cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag">决策树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" rel="tag">多元回归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">手撕面试题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag">数据仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" rel="tag">数据倾斜</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">数据可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" rel="tag">数据质量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99/" rel="tag">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%99%E5%AD%98/" rel="tag">留存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" rel="tag">统计学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" rel="tag">维度建模解析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" rel="tag">表分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">非监督学习</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/51vpa/" style="font-size: 10px;">51vpa</a> <a href="/tags/Budckets/" style="font-size: 10px;">Budckets</a> <a href="/tags/DataFrame/" style="font-size: 10px;">DataFrame</a> <a href="/tags/Decision-tree/" style="font-size: 10px;">Decision_tree</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Flume/" style="font-size: 10px;">Flume</a> <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/Hive/" style="font-size: 15.71px;">Hive</a> <a href="/tags/KNN/" style="font-size: 10px;">KNN</a> <a href="/tags/Kimball/" style="font-size: 10px;">Kimball</a> <a href="/tags/Pandas/" style="font-size: 11.43px;">Pandas</a> <a href="/tags/Scala/" style="font-size: 11.43px;">Scala</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Spark%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 10px;">Spark源码分析</a> <a href="/tags/aliyun/" style="font-size: 14.29px;">aliyun</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bayes/" style="font-size: 10px;">bayes</a> <a href="/tags/csv/" style="font-size: 10px;">csv</a> <a href="/tags/data-engineer/" style="font-size: 10px;">data_engineer</a> <a href="/tags/datetime/" style="font-size: 10px;">datetime</a> <a href="/tags/flink/" style="font-size: 10px;">flink</a> <a href="/tags/grep/" style="font-size: 10px;">grep</a> <a href="/tags/hadoop/" style="font-size: 11.43px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/tags/hive/" style="font-size: 18.57px;">hive</a> <a href="/tags/hive%E4%BC%98%E5%8C%96/" style="font-size: 10px;">hive优化</a> <a href="/tags/k-means/" style="font-size: 10px;">k-means</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/neural-network/" style="font-size: 10px;">neural network</a> <a href="/tags/presto/" style="font-size: 10px;">presto</a> <a href="/tags/python/" style="font-size: 17.14px;">python</a> <a href="/tags/sed/" style="font-size: 10px;">sed</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/tags/spark/" style="font-size: 12.86px;">spark</a> <a href="/tags/sql%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" style="font-size: 10px;">sql无法解决的问题</a> <a href="/tags/svm/" style="font-size: 10px;">svm</a> <a href="/tags/tomcat8/" style="font-size: 10px;">tomcat8</a> <a href="/tags/user-profile/" style="font-size: 10px;">user profile</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/word-cloud/" style="font-size: 10px;">word cloud</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 11.43px;">优化</a> <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" style="font-size: 10px;">决策树</a> <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">分类算法</a> <a href="/tags/%E5%A4%9A%E5%85%83%E5%9B%9E%E5%BD%92/" style="font-size: 10px;">多元回归</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 10px;">大数据</a> <a href="/tags/%E6%89%8B%E6%92%95%E9%9D%A2%E8%AF%95%E9%A2%98/" style="font-size: 10px;">手撕面试题</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" style="font-size: 20px;">数据仓库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C/" style="font-size: 11.43px;">数据倾斜</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">数据可视化</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F/" style="font-size: 10px;">数据质量</a> <a href="/tags/%E6%AD%A3%E5%88%99/" style="font-size: 10px;">正则</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">深度学习</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%95%99%E5%AD%98/" style="font-size: 10px;">留存</a> <a href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 12.86px;">监督学习</a> <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/" style="font-size: 10px;">统计学</a> <a href="/tags/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E8%A7%A3%E6%9E%90/" style="font-size: 10px;">维度建模解析</a> <a href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" style="font-size: 10px;">聚类算法</a> <a href="/tags/%E8%A1%A8%E5%88%86%E7%B1%BB/" style="font-size: 10px;">表分类</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 11.43px;">随笔</a> <a href="/tags/%E9%9D%9E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">非监督学习</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/11/20/hive%E4%B8%AD%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">hive中复杂数据结构</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/13/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86_Plotly/">数据可视化—Plotly</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%85%B3%E4%BA%8E%E5%B9%B8%E7%A6%8F/">关于幸福</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/10/%E5%8F%8C11_%E8%AE%A9%E6%88%91%E9%81%87%E8%A7%81%E4%BD%A0/">双11_让我遇见你</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/08/Hive%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/">Hive的元数据表结构详解</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
-</body>
-</html>
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug
