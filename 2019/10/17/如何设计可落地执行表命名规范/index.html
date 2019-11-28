@@ -1,99 +1,36 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="数仓表命名规范"><meta name="keywords" content="数据仓库"><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><title>数仓表命名规范 | Hexo</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何设计可落地执行表命名规范"><span class="toc-number">1.</span> <span class="toc-text">如何设计可落地执行表命名规范</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关注点"><span class="toc-number">1.2.</span> <span class="toc-text">关注点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#举个例子"><span class="toc-number">1.3.</span> <span class="toc-text">举个例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#思考"><span class="toc-number">1.4.</span> <span class="toc-text">思考</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">1.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">John Doe</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">66</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">64</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Hexo</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">数仓表命名规范</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-17</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="如何设计可落地执行表命名规范"><a href="#如何设计可落地执行表命名规范" class="headerlink" title="如何设计可落地执行表命名规范"></a>如何设计可落地执行表命名规范</h3><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>数据仓库的实施和落地需要团队中不同成员的参与和配合，因此也需要各种各样的规范，其中最典型的就是表命名规范，规范的表命名能让使用者轻而易举地明白该表的作用和含义。</p>
+<p>但是，在实际的落地实施中，经常会出现各种不规范的命名例子，同时也会伴随着各种各样的疑问。如：</p>
+<p>“画像表该如何命名？”<br>“表名到底要包含多少信息？”<br>“我这张表该放在app层还是dws层？”<br>如何解决上面这些问题，就是本篇的重点：如何设计可落地执行的表命名规范！</p>
+<a id="more"></a>
 
-block top_img
-  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
-  if (top_img && page.top_img !== false)
-    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
-    - var flag = top_img === true ? 'no-bg' : ''
-    div#top-container(style=bg_img class=flag)
-      include ./includes/header.pug
-      #post-info
-        #post-title= page.title || _p('no_title')
-        #post-meta
-          if (theme.post_meta.date_type)
-            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
-            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-          if (theme.post_meta.categories && page.categories.data.length > 0)
-            if (theme.post_meta.date_type)
-              span.post-meta__separator |
-            each item, index in page.categories.data
-              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
-              a(href=url_for(item.path)).post-meta__categories #[=item.name]
-              if (index < page.categories.data.length - 1)
-                 i.fa.fa-angle-right(aria-hidden="true")
-          if (theme.disqus.enable && theme.disqus.count)
-            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-              span.post-meta__separator |
-            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
-            a(href=url_for(page.path) + '#disqus_thread')
-              span.disqus-comment-count(data-disqus-identifier=page.path)
-          if (theme.wordcount && theme.wordcount.enable)
-            .post-meta-wordcount
-              span= _p('post.wordcount') + ': '
-              span.word-count= wordcount(page.content)
-              span.post-meta__separator |
-              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-  else
-    div#top-container.plain
-      include ./includes/header.pug
-
-block content
-  article#post(class="")
-    if (!top_img)
-      #post-title.plain= page.title || _p('no_title')
-      #post-meta
-        if (theme.post_meta.date_type)
-          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
-          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-        if (theme.post_meta.categories && page.categories.data.length > 0)
-          if (theme.post_meta.date_type)
-            span.post-meta__separator |
-          each item, index in page.categories.data
-            i.fa.fa-inbox(aria-hidden="true")
-            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
-            if (index < page.categories.data.length - 1)
-                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
-        if (theme.disqus.enable && theme.disqus.count)
-          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-            span.post-meta__separator |
-          i.fa.fa-comment-o(aria-hidden="true")
-          a(href=url_for(page.path) + '#disqus_thread')
-            span.disqus-comment-count(data-disqus-identifier=page.path)
-        if (theme.wordcount && theme.wordcount.enable)
-          span.post-meta__separator |
-          span.post-meta-wordcount
-            span= _p('post.wordcount') + ': '
-            span.word-count= wordcount(page.content)
-            span.post-meta__separator |
-            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-    #post-content.article-container!= page.content
-  if (theme.post_copyright && theme.post_copyright.enable)
-    .post-copyright
-      .post-copyright__author
-        span.post-copyright-meta= _p('post.copyright.author') + ": "
-        span.post-copyright-info
-          a(href=`mailto:${config.email}`) #[=config.author]
-      .post-copyright__type
-        span.post-copyright-meta= _p('post.copyright.link') + ": "
-        span.post-copyright-info
-          a(href=url_for(page.permalink)) #[=page.permalink]
-      .post-copyright__notice
-        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
-        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
-  if (theme.post_meta.tags)
-    .post-meta__tag-list
-      each item, index in page.tags.data
-        a(href=url_for(item.path)).post-meta__tags #[=item.name]
-  if (theme.QR_code)
-    if (theme.QR_code.length > 0)
-      .post-qr-code
-        each item in theme.QR_code
-          .post-qr-code-item
-            img.post-qr-code__img(src=(item.itemlist||item).img)
-            .post-qr-code__desc=(item.itemlist||item).text
-  include includes/share/index.pug
-  include includes/pagination.pug
-  if (theme.adv && theme.adv.enable)
-    .post-adv!= theme.adv.info
-  if page.comments !== false
-    include includes/comments/index.pug
+<h4 id="关注点"><a href="#关注点" class="headerlink" title="关注点"></a>关注点</h4><p><strong>一、数据分层</strong></p>
+<p>表命名规范的设计，本身其实是一件很简单的事情，但是它却依赖于不少其它外部信息，其中，数据分层是最为重要的地方。但是，一旦数据粉刺有了清晰的边界，表规范的设计就很会容易很多。</p>
+<p><strong>二、其它关注点</strong></p>
+<p>在数据分层之外，也有很多其它需要关注的点，比如说：</p>
+<p>BG和部门的划分<br>业务线的划分<br>数据的更新日期<br>数据的用途<br>需要关注的点可以有很多，但是在具体设计的时候，可以适当做一些取舍，只规范核心和重要的即可。</p>
+<p><strong>三、一定要有明确的界限！</strong></p>
+<p>规范设计，表面上很简单，但是背后需要思考的地方却很多。同样，dwm和dws好的明确界限是什么，dws和app层的明确界限又是什么。</p>
+<p>当这些设计和规范都存在模糊的时候，大家首先就会不明白该把表放在哪个分层里面，更不用说来确定命名了。</p>
+<p>关于分层之间的明确界限这里先不做过多解释，本文默认读者在设计分层的时候已经考虑好了明确的划分界限，在此基础上，我们只需要将该划分界限以一种优雅的方式展示出来即可。</p>
+<h4 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h4><p>该例，以流程图的方式来展示，更加直观和易懂，本图侧重dwm层表的命名规范，其余命名是类似的道理：</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/table_col.png" alt="表命令规范流程图"></p>
+<p>第一个判断条件是该表的用途，是中间表、原始日志还是业务展示用的表<br>如果该表被判断为中间表，就会走入下一个判断条件：表是否有group操作<br>通过是否有grouo操作来判断该表该划分在dwd层还是dwm和dws层<br>如果不是dwd层，则需要判断该表是否是多个行为的汇总表（即宽表）<br>最后再分别填上事业群、部门、业务线、自定义名称和更新频率等信息即可。</p>
+<h4 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h4><p>表命名，其实在很大程度上是对元数据描述的一种体现，表命名规范越完善，我们能从表名获取到的信息就越多。以上图为例，我们单纯从表中就能获得如下信息：</p>
+<p>分层：表的使用范围<br>事业群和部门：生产该表或者该数据的团队<br>业务线：表明该数据是哪个产品或者业务线相关<br>自定义：一般会尽可能多描述该表的信息，比如活跃表、留存表等<br>更新周期：比如说天级还是月级更新</p>
+<p>这里只列举部分信息，有一些也是可以加入表命名中，比如说表的类型说增量更新还是全量更新，自定义命名部分更细致的划分等等。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>为什么会有这样一张流程图来规划表的命名？</p>
+<p>所有的规范都需要有可落地执行的边界，同时这个边界一定说要让遵从着不需要太懂脑子去理解和思考，最好看一眼就知道该怎么去做。一旦你的规范有模糊的地方，那么别人就可以去挑战甚至不服从。</p>
+<p>同样，这样的问题和解决方式也存在于各个地方中，比如上报数据的规范、字段命名的规范等等。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="/http:/yoursite.com/2019/10/17/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E5%8F%AF%E8%90%BD%E5%9C%B0%E6%89%A7%E8%A1%8C%E8%A1%A8%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83/">http://yoursite.com/2019/10/17/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E5%8F%AF%E8%90%BD%E5%9C%B0%E6%89%A7%E8%A1%8C%E8%A1%A8%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/">数据仓库</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/10/22/Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/"><i class="fa fa-chevron-left">  </i><span>Spark 基本概念、模块和架构</span></a></div><div class="next-post pull-right"><a href="/2019/09/29/hive%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/"><span>hive执行计划</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By John Doe</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

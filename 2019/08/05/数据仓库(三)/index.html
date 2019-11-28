@@ -1,99 +1,70 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="数据仓库(三)"><meta name="keywords" content="数据仓库,hive"><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><title>数据仓库(三) | Hexo</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hive四种存储格式解析"><span class="toc-number">1.</span> <span class="toc-text">Hive四种存储格式解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Textfile"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.Textfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Sequencefile"><span class="toc-number">1.0.2.</span> <span class="toc-text">2.Sequencefile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Rcfile"><span class="toc-number">1.0.3.</span> <span class="toc-text">3.Rcfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Orc"><span class="toc-number">1.0.4.</span> <span class="toc-text">4.Orc</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结："><span class="toc-number">2.</span> <span class="toc-text">总结：</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">John Doe</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">66</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">64</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Hexo</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">数据仓库(三)</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="Hive四种存储格式解析"><a href="#Hive四种存储格式解析" class="headerlink" title="Hive四种存储格式解析"></a>Hive四种存储格式解析</h1><ul>
+<li>TEXTFILE</li>
+<li>SEQUENCEFILE</li>
+<li>RCFILE</li>
+<li>ORCFILE</li>
+</ul>
+<h3 id="1-Textfile"><a href="#1-Textfile" class="headerlink" title="1.Textfile"></a>1.Textfile</h3><p>普通的文本型文件，是Hadoop中最常见的输出格式，也是hive的默认文件格式。</p>
+<a id="more"></a>
 
-block top_img
-  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
-  if (top_img && page.top_img !== false)
-    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
-    - var flag = top_img === true ? 'no-bg' : ''
-    div#top-container(style=bg_img class=flag)
-      include ./includes/header.pug
-      #post-info
-        #post-title= page.title || _p('no_title')
-        #post-meta
-          if (theme.post_meta.date_type)
-            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
-            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-          if (theme.post_meta.categories && page.categories.data.length > 0)
-            if (theme.post_meta.date_type)
-              span.post-meta__separator |
-            each item, index in page.categories.data
-              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
-              a(href=url_for(item.path)).post-meta__categories #[=item.name]
-              if (index < page.categories.data.length - 1)
-                 i.fa.fa-angle-right(aria-hidden="true")
-          if (theme.disqus.enable && theme.disqus.count)
-            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-              span.post-meta__separator |
-            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
-            a(href=url_for(page.path) + '#disqus_thread')
-              span.disqus-comment-count(data-disqus-identifier=page.path)
-          if (theme.wordcount && theme.wordcount.enable)
-            .post-meta-wordcount
-              span= _p('post.wordcount') + ': '
-              span.word-count= wordcount(page.content)
-              span.post-meta__separator |
-              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-  else
-    div#top-container.plain
-      include ./includes/header.pug
-
-block content
-  article#post(class="")
-    if (!top_img)
-      #post-title.plain= page.title || _p('no_title')
-      #post-meta
-        if (theme.post_meta.date_type)
-          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
-          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-        if (theme.post_meta.categories && page.categories.data.length > 0)
-          if (theme.post_meta.date_type)
-            span.post-meta__separator |
-          each item, index in page.categories.data
-            i.fa.fa-inbox(aria-hidden="true")
-            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
-            if (index < page.categories.data.length - 1)
-                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
-        if (theme.disqus.enable && theme.disqus.count)
-          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-            span.post-meta__separator |
-          i.fa.fa-comment-o(aria-hidden="true")
-          a(href=url_for(page.path) + '#disqus_thread')
-            span.disqus-comment-count(data-disqus-identifier=page.path)
-        if (theme.wordcount && theme.wordcount.enable)
-          span.post-meta__separator |
-          span.post-meta-wordcount
-            span= _p('post.wordcount') + ': '
-            span.word-count= wordcount(page.content)
-            span.post-meta__separator |
-            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-    #post-content.article-container!= page.content
-  if (theme.post_copyright && theme.post_copyright.enable)
-    .post-copyright
-      .post-copyright__author
-        span.post-copyright-meta= _p('post.copyright.author') + ": "
-        span.post-copyright-info
-          a(href=`mailto:${config.email}`) #[=config.author]
-      .post-copyright__type
-        span.post-copyright-meta= _p('post.copyright.link') + ": "
-        span.post-copyright-info
-          a(href=url_for(page.permalink)) #[=page.permalink]
-      .post-copyright__notice
-        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
-        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
-  if (theme.post_meta.tags)
-    .post-meta__tag-list
-      each item, index in page.tags.data
-        a(href=url_for(item.path)).post-meta__tags #[=item.name]
-  if (theme.QR_code)
-    if (theme.QR_code.length > 0)
-      .post-qr-code
-        each item in theme.QR_code
-          .post-qr-code-item
-            img.post-qr-code__img(src=(item.itemlist||item).img)
-            .post-qr-code__desc=(item.itemlist||item).text
-  include includes/share/index.pug
-  include includes/pagination.pug
-  if (theme.adv && theme.adv.enable)
-    .post-adv!= theme.adv.info
-  if page.comments !== false
-    include includes/comments/index.pug
+<p>如果表定义为textfile文件，则可以向该表中装载以逗号、TAB或空格作为分隔符的数据，也可以导入Json格式的数据。（需要自己写serde，🐍）</p>
+<ul>
+<li>可直接load数据</li>
+</ul>
+<p><strong>hive中默认的记录和字段分隔</strong></p>
+<table>
+<thead>
+<tr>
+<th>分隔符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\n</td>
+<td>对文本文件来说，每行都是一条记录，可以使用换行符分隔记录</td>
+</tr>
+<tr>
+<td>^A</td>
+<td>分隔字段，八进制编码:  \001</td>
+</tr>
+<tr>
+<td>^B</td>
+<td>分隔array，struct，也可用于map，八进制编码：\002</td>
+</tr>
+<tr>
+<td>^C</td>
+<td>map中键和值之间的分隔，八进制编码：\003</td>
+</tr>
+</tbody></table>
+<h3 id="2-Sequencefile"><a href="#2-Sequencefile" class="headerlink" title="2.Sequencefile"></a>2.Sequencefile</h3><p>hadoop处理少量的大文件比大量小文件的性能要好，如果文件小于hadoop定义的块尺寸（128M），可以认为是小文件。元数据的增长转化为了namenode的开销，如果有大量的小文件，namenode会成为性能瓶颈。</p>
+<p>为解决这个问题，hadoop引入sequencefile，sequencefile是可分割的二进制格式，联合多个小文件。</p>
+<ul>
+<li>不能直接load数据</li>
+</ul>
+<h3 id="3-Rcfile"><a href="#3-Rcfile" class="headerlink" title="3.Rcfile"></a>3.Rcfile</h3><p>一种高压缩的二进制文件格式，列式存储。先以分隔符做水平分区，然后分隔列做垂直分区。这种面向列的存储在执行数据分析时更高效。</p>
+<ul>
+<li>不能直接load数据</li>
+</ul>
+<h3 id="4-Orc"><a href="#4-Orc" class="headerlink" title="4.Orc"></a>4.Orc</h3><p>Rc格式的优化方案，ORC能将原始数据的大小缩减75%，在查询性能上大大提升。</p>
+<p>hive中唯一支持事务的文件格式（至今未使用这种方案，不太成熟，设置还麻烦，不建议使用。）</p>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>如果数据有参数化的分隔符，textfile</li>
+<li>数据所在文件快尺寸比较下，Sequencefile</li>
+<li>执行数据分析，高效存储数据，rcfile</li>
+<li>见效数据所在存储空间并提升性能，orcfile（<font color=red size=3>不涉及load数据，统一使用orc，扯其他没用的干啥！！</font>[来自隔壁小朋友的亲切问候Σ( ° △ °|||)︴]）</li>
+</ul>
+<p>补充1：数据仓库中，除了日期维度表外，统一使用orc。日期维表数据一旦生成就不会修改，所以使用textfile格式。原始数据存储里的表数据是从源数据库直接导入的，只有追加和覆盖两种方式，不存在数据更新的问题，默认使用textfile。</p>
+<p>本来计划再写一篇hive表的分类，留到明天吧。毕竟blog没有魔兽好玩。🐶</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="/http:/yoursite.com/2019/08/05/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93(%E4%B8%89)/">http://yoursite.com/2019/08/05/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93(%E4%B8%89)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/">数据仓库</a><a class="post-meta__tags" href="/tags/hive/">hive</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/08/06/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%EF%BC%88%E5%9B%9B%EF%BC%89/"><i class="fa fa-chevron-left">  </i><span>数据仓库（四）</span></a></div><div class="next-post pull-right"><a href="/2019/08/05/%E5%87%8C%E6%99%A8%E4%B8%89%E7%82%B9/"><span>凌晨三点</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By John Doe</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

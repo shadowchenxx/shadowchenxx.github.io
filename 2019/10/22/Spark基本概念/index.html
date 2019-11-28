@@ -1,99 +1,84 @@
-extends includes/layout.pug
-
-block top_img
-  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
-  if (top_img && page.top_img !== false)
-    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
-    - var flag = top_img === true ? 'no-bg' : ''
-    div#top-container(style=bg_img class=flag)
-      include ./includes/header.pug
-      #post-info
-        #post-title= page.title || _p('no_title')
-        #post-meta
-          if (theme.post_meta.date_type)
-            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
-            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-          if (theme.post_meta.categories && page.categories.data.length > 0)
-            if (theme.post_meta.date_type)
-              span.post-meta__separator |
-            each item, index in page.categories.data
-              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
-              a(href=url_for(item.path)).post-meta__categories #[=item.name]
-              if (index < page.categories.data.length - 1)
-                 i.fa.fa-angle-right(aria-hidden="true")
-          if (theme.disqus.enable && theme.disqus.count)
-            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-              span.post-meta__separator |
-            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
-            a(href=url_for(page.path) + '#disqus_thread')
-              span.disqus-comment-count(data-disqus-identifier=page.path)
-          if (theme.wordcount && theme.wordcount.enable)
-            .post-meta-wordcount
-              span= _p('post.wordcount') + ': '
-              span.word-count= wordcount(page.content)
-              span.post-meta__separator |
-              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-  else
-    div#top-container.plain
-      include ./includes/header.pug
-
-block content
-  article#post(class="")
-    if (!top_img)
-      #post-title.plain= page.title || _p('no_title')
-      #post-meta
-        if (theme.post_meta.date_type)
-          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
-          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
-        if (theme.post_meta.categories && page.categories.data.length > 0)
-          if (theme.post_meta.date_type)
-            span.post-meta__separator |
-          each item, index in page.categories.data
-            i.fa.fa-inbox(aria-hidden="true")
-            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
-            if (index < page.categories.data.length - 1)
-                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
-        if (theme.disqus.enable && theme.disqus.count)
-          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
-            span.post-meta__separator |
-          i.fa.fa-comment-o(aria-hidden="true")
-          a(href=url_for(page.path) + '#disqus_thread')
-            span.disqus-comment-count(data-disqus-identifier=page.path)
-        if (theme.wordcount && theme.wordcount.enable)
-          span.post-meta__separator |
-          span.post-meta-wordcount
-            span= _p('post.wordcount') + ': '
-            span.word-count= wordcount(page.content)
-            span.post-meta__separator |
-            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
-    #post-content.article-container!= page.content
-  if (theme.post_copyright && theme.post_copyright.enable)
-    .post-copyright
-      .post-copyright__author
-        span.post-copyright-meta= _p('post.copyright.author') + ": "
-        span.post-copyright-info
-          a(href=`mailto:${config.email}`) #[=config.author]
-      .post-copyright__type
-        span.post-copyright-meta= _p('post.copyright.link') + ": "
-        span.post-copyright-info
-          a(href=url_for(page.permalink)) #[=page.permalink]
-      .post-copyright__notice
-        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
-        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
-  if (theme.post_meta.tags)
-    .post-meta__tag-list
-      each item, index in page.tags.data
-        a(href=url_for(item.path)).post-meta__tags #[=item.name]
-  if (theme.QR_code)
-    if (theme.QR_code.length > 0)
-      .post-qr-code
-        each item in theme.QR_code
-          .post-qr-code-item
-            img.post-qr-code__img(src=(item.itemlist||item).img)
-            .post-qr-code__desc=(item.itemlist||item).text
-  include includes/share/index.pug
-  include includes/pagination.pug
-  if (theme.adv && theme.adv.enable)
-    .post-adv!= theme.adv.info
-  if page.comments !== false
-    include includes/comments/index.pug
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Spark 基本概念、模块和架构"><meta name="keywords" content="Spark"><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><title>Spark 基本概念、模块和架构 | Hexo</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、基本概念"><span class="toc-number">1.</span> <span class="toc-text">一、基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、基本模块"><span class="toc-number">2.</span> <span class="toc-text">二、基本模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、基本架构"><span class="toc-number">3.</span> <span class="toc-text">三、基本架构</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">John Doe</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">66</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">64</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Hexo</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Spark 基本概念、模块和架构</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-22</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h3><ul>
+<li><p>RDD(Resilient Distributed Datasets)：弹性分布式数据集，只读分区记录的集合，Spark 对所处理数据的基本抽象。RDD 是 Spark 分发数据和计算的基础抽象类。一个 RDD 是一个不可改变的分布式集合对象，因此在使用 scala 编写时，前面加修饰符 val 。Spark 中 的计算可以简单抽象为对 RDD 的创建、转换和返回操作结果的过程：</p>
+<ul>
+<li><p>创建<br>通过加载外部物理存储（如HDFS）中的数据集，或 Application 中定义的对象集合（如List）来创建。RDD 在创建后不可被改变，只可以对其执行下面两种操作。</p>
+</li>
+<li><p>转换（Transformation）<br>对已有的 RDD 中的数据执行计算进行转换，而产生新的 RDD，在这个过程中有时会产生中间 RDD。Spark 对于 Transformation 采用惰性计算机制，遇到 Transformation 时并不会立即计算结果，而是要等遇到 Action 时一起执行。</p>
+</li>
+<li><p>行动（Action）<br>对已有的 RDD 中的数据执行计算产生结果，将结果返回 Driver 程序或写入到外部物理存储。在 Action 过程中同样有可能生成中间 RDD。</p>
+<a id="more"></a>
+</li>
+</ul>
+</li>
+<li><p>DAG(Directed Acyclic Graph)：有向无环图。在图论中，边没有方向的图称为无向图，如果边有方向称为有向图。在无向图的基础上，任何顶点都无法经过若干条边回到该点，则这个图就没有环路，称为有向无环图( DAG 图)。Spark 中使用 DAG 对 RDD 的关系进行建模，描述了 RDD 的依赖关系，这种关系也被称之为 lineage。</p>
+</li>
+<li><p>Partition：分区。一个 RDD 在物理上被切分为多个 Partition，即数据分区，这些 Partition 可以分布在不同的节点上。Partition 是 Spark 计算任务的基本处理单位，决定了并行计算的粒度，而 Partition 中的每一条 Record 为基本处理对象。例如对某个 RDD 进行 map 操作，在具体执行时是由多个并行的 Task 对各自分区的每一条记录进行 map 映射。</p>
+</li>
+<li><p>NarrowDependency：窄依赖。一个父 RDD 的 partition 最多被子 RDD 中的 partition 使用一次，一父对应一子。NarrowDependency 分为 OneToOneDependency 和 RangeDependency</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_1.png" alt="saprk_1"></p>
+</li>
+<li><p>ShuffleDependency(WideDependency)：宽依赖。父 RDD 中的一个 partition 会被子 RDD 中的 partition 使用多次，一父多子。</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_2.png" alt=""></p>
+</li>
+<li><p>Job：包含很多 task 的并行计算，可以认为是 Spark RDD 里面的 action，每个 action 的触发会生成一个 job。Spark 采用惰性机制，对 RDD 的创建和转换并不会立即执行，只有在遇到第一个 Action 时才会生成一个 Job，然后统一调度执行。一个 Job 包含 N 个 Transformation 和 1 个 Action。</p>
+</li>
+<li><p>Shuffle：有一部分 Transformation 或 Action 会让 RDD 产生宽依赖，这样过程就像是将父 RDD 中所有分区的 Record 进行了“洗牌”（Shuffle），数据被打散重组，如属于 Transformation 操作的 join，以及属于 Action 操作的 reduce 等，都会产生 Shuffle。</p>
+</li>
+<li><p>Stage：用户提交的计算任务是一个由 RDD 构成的 DAG，如果 RDD 在转换的时候需要做 Shuffle，那么这个 Shuffle 的过程就将这个 DAG 分为了不同的阶段（即Stage）。由于 Shuffle 的存在，不同的Stage 是不能并行计算的，因为后面 Stage 的计算需要前面 Stage 的 Shuffle 的结果。在对 Job 中的所有操作划分 Stage 时，一般会按照倒序进行，即从 Action 开始，遇到窄依赖操作，则划分到同一个执行阶段，遇到宽依赖操作，则划分一个新的执行阶段，且新的阶段为之前阶段的 parent，然后依次类推递归执行。child Stage 需要等待所有的 parent Stage执行完之后才可以执行，这时Stage 之间根据依赖关系构成了一个大粒度的 DAG 。在一个 Stage 内，所有的操作以串行的 Pipeline 的方式，由一组 Task 完成计算。</p>
+</li>
+<li><p>Task：具体执行任务。一个 Job 在每个 Stage 内都会按照 RDD 的 Partition 数量，创建多个 task。每个 Stage 内多个并发的 Task 执行逻辑完全相同，只是作用于不同的Partition。一个 Stage 的总 Task 的个数由 Stage 中最后的一个 RDD 的 Partition 的个数决定。 在 Spark 中有两类 task:<br>ShuffleMapTask：输出是 shuffle 所需数据， stage 的划分也以此为依据， shuffle 之前的所有变换是一个 stage，shuffle 之后的操作是另一个 stage 。</p>
+</li>
+<li><p>ResultTask：输出是 result，比如 rdd.parallize(1 to 10).foreach(println) 这个操作没有 shuffle，直接就输出了，那么它的 task 是 resultTask，stage 也只有一个；如果是 rdd.map(x =&gt; (x, 1)).reduceByKey(_ + _).foreach(println)， 这个 job 因为有 reduce，所以有一个 shuffle 过程，那么 reduceByKey 之前的是一个 stage，执行 ShuffleMapTask，输出 shuffle 所需的数据，reduceByKey 到最后是一个 stage，直接就输出结果了。如果 job 中有多次 shuffle，那么每个 shuffle 之前都是一个stage。</p>
+</li>
+<li><p><a href="https://www.cnblogs.com/wzj4858/p/8204411.html" target="_blank" rel="noopener"><a href="https://www.cnblogs.com/wzj4858/p/8204411.html" target="_blank" rel="noopener">spark中job stage task关系</a></a></p>
+</li>
+</ul>
+<h3 id="二、基本模块"><a href="#二、基本模块" class="headerlink" title="二、基本模块"></a>二、基本模块</h3><p>整个 Spark 主要由以下模块组成：</p>
+<ul>
+<li><p>Spark Core：Spark的核心功能实现，包括：<br>基础设施：Spark 中有很多基础设施，被 Spark 中的各种组件广泛使用，这些基础设施包括 SparkConf、Spark 内置 RPC 框架、事件总线 ListenerBus、度量系统。<br>SparkConf 用于管理Spark应用程序的各种配置信息。<br>Spark 内置 RPC 框架 使用 Netty 实现，有同步和异步的多种实现，Spark 各个组件间的通信都依赖于此 RPC 框架。<br>事件总线是 SparkContext 内部各个组件间使用事件——监听器模式异步调用的实现。<br>度量系统由Spark中的多种度量源（Source）和多种度量输出（Sink）构成，完成对整个Spark集群中各个组件运行期状态的监控。</p>
+</li>
+<li><p>SparkContext：SparkContext 是 Spark 的入口，Spark 程序的提交与执行离不开 SparkContext。它隐藏了网络通信、分布式部署、消息通信、存储体系、计算引擎、度量系统、文件服务、Web UI 等内容，开发者只需要使用 SparkContext 提供的 API 完成功能开发。</p>
+</li>
+<li><p>SparkEnv：Spark 执行环境。SparkEnv 内部封装了 RPC 环境（RpcEnv）、序列化管理器、广播管理器（BroadcastManager）、map任务输出跟踪器（MapOutputTracker）、存储体系、度量系统（MetricsSystem）、输出提交协调器（OutputCommitCoordinator）等Task运行所需的各种组件。<br>存储体系：它优先考虑使用各节点的内存作为存储，当内存不足时才会考虑使用磁盘，这极大地减少了磁盘 I/O，提升了任务执行的效率，使得 Spark 适用于实时计算、迭代计算、流式计算等场景。Spark 的内存存储空间和执行存储空间之间的边界是可以控制的。<br>调度系统：调度系统主要由 DAGScheduler 和 TaskScheduler 组成。DAGScheduler 负责创建 Job、将 DAG 中的 RDD 划分到不同的 Stage、给 Stage 创建对应的 Task、批量提交 Task 等功能。TaskScheduler 负责按照 FIFO 或者 FAIR 等调度算法对批量 Task 进行调度。<br>计算引擎等：计算引擎由内存管理器、任务内存管理器、Task、Shuffle 管理器等组成。</p>
+</li>
+<li><p>Spark SQL：提供SQL处理能力，便于熟悉关系型数据库操作的工程师进行交互查询。此外，还为熟悉 Hive 开发的用户提供了对 Hive SQL 的支持。</p>
+</li>
+<li><p>Spark Streaming：提供流式计算处理能力，目前支持 Apache Kafka、Apache Flume、Amazon Kinesis 和简单的 TCP 套接字等多种数据源。此外，Spark Streaming 还提供窗口操作用于对一定周期内的流数据进行处理。</p>
+</li>
+<li><p>GraphX：提供图计算处理能力，支持分布式，Pregel 提供的 API 可以解决图计算中的常见问题。<br>MLlib：Spark 提供的机器学习库。MLlib 提供了机器学习相关的统计、分类、回归等领域的多种算法实现。其一致的 API 接口大大降低了用户的学习成本。<br>Spark SQL、Spark Streaming、GraphX、MLlib的能力都是建立在核心引擎之上：</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_3.png" alt=""></p>
+</li>
+</ul>
+<h3 id="三、基本架构"><a href="#三、基本架构" class="headerlink" title="三、基本架构"></a>三、基本架构</h3><p>Spark 集群由集群管理器 Cluster Manager、工作节点 Worker、执行器 Executor、驱动器 Driver、应用程序 Application 等部分组成。</p>
+<p><img src="https://raw.githubusercontent.com/shadowchenxx/markdown_pic/master/pictures/spark_base_4.png" alt=""></p>
+<ul>
+<li><p>3.1、Cluter Manager<br>Spark 的集群管理器，主要负责对整个集群资源的分配和管理。根据部署模式的不同，可以分为如下：</p>
+<p>Hadoop YARN: 主要是指 YARN 中的 ResourceManager。YARN 是 Hadoop2.0 中引入的集群管理器，可以让多种数据处理框架运行在一个共享的资源池上，让 Spark 运行在配置了 YARN 的集群上是一个非常好的选择，可以利用 YARN 来管理资源。<br>Apache Mesos：主要是指 Mesos Master。Mesos 起源于Berkeley AMP实验室，是一个通用的集群管理器。能够将CPU、内存、存储以及其它计算资源由设备（物理或虚拟）中抽象出来，形成一个池的逻辑概念，从而实现高容错与弹性分布式系统的轻松构建与高效运行。<br>Standalone：主要是指 Standalone Master。Standalone Master 是 spark 原生的资源管理，由Master负责资源的分配。</p>
+</li>
+<li><p>3.2、Worker<br>Spark 的工作节点，用于执行提交的作业。在 YARN 部署模式下 Worker 由 NodeManager 代替。Worker 有如下作用：</p>
+<p>通过注册机制向 Cluster Master 汇报自身的 cpu 和 memory 等资源<br>在 Master 的指示下创建启动 Executor，Executor 是执行真正计算的苦力<br>将资源和任务进一步分配给 Executor<br>同步资源信息、Executor 状态信息给 Cluster Master</p>
+</li>
+<li><p>3.3、Executor<br>真正执行计算任务的组件。</p>
+<p>Executor 是某个 Application 运行在 Worker 节点上的一个进程，该进程负责运行某些 Task， 并且负责将数据存到内存或磁盘上，每个 Application 都有各自独立的一批 Executor， 在 Spark on Yarn 模式下，其进程名称为 CoarseGrainedExecutor Backend。一个 CoarseGrainedExecutor Backend 有且仅有一个 Executor 对象， 负责将 Task 包装成 taskRunner，并从线程池中抽取一个空闲线程运行 Task， 每个 CoarseGrainedExecutorBackend 能并行运行 Task 的数量取决于分配给它的 CPU 的个数。</p>
+</li>
+<li><p>3.4、Driver<br>Application 的驱动程序。可以理解为使程序运行中的 main 函数，它会创建 SparkContext。Application 通过 Driver 与 Cluster Master 和 Executor 进行通信。Driver 可以运行在 Application 中，也可以由 Application 提交给 Cluster Master，由 Cluster Master 安排 Worker 运行。</p>
+<p>Driver 的作用：</p>
+<p>运行应用程序的 main 函数<br>创建 Spark 的上下文<br>划分 RDD 并生成有向无环图（DAGScheduler）<br>与 Spark 中的其他组进行协调，协调资源等等（SchedulerBackend）<br>生成并发送 task 到 executor（taskScheduler）</p>
+</li>
+<li><p>3.5、Application<br>用户使用 Spark API 编写的的应用程序，其中包括一个 Driver 功能的代码和分布在集群中多个节点上运行的 Executor 代码。</p>
+<p>Application 通过 Spark API 创建 RDD，对 RDD 进行转换，创建 DAG，并通过 Driver 将 Application 注册到 Cluster Master。</p>
+</li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="/http:/yoursite.com/2019/10/22/Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">http://yoursite.com/2019/10/22/Spark%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spark/">Spark</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/10/30/UDF&amp;GenericUDF/"><i class="fa fa-chevron-left">  </i><span>Hive- UDF&amp;GenericUDF</span></a></div><div class="next-post pull-right"><a href="/2019/10/17/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E5%8F%AF%E8%90%BD%E5%9C%B0%E6%89%A7%E8%A1%8C%E8%A1%A8%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83/"><span>数仓表命名规范</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By John Doe</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
